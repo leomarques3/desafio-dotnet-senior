@@ -1,6 +1,5 @@
 using System;
 using System.Globalization;
-using System.Text.RegularExpressions;
 using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NotaCarioca.Servicos;
@@ -54,11 +53,11 @@ namespace NotaCarioca.Testes.Integracao.Infra
                    "</InscricaoMunicipal></Prestador>" + Periodo(ini, fim) + tomador + "<Pagina>" + pagina + "</Pagina></ConsultarNfseEnvio>";
         }
 
-        public static string PedidoServicoTomado(string cnpj, string cpf, DateTime ini, DateTime fim, int pagina = 1, string elemento = "Consulente")
+        public static string PedidoServicoTomado(string cnpj, string cpf, DateTime ini, DateTime fim, string elemento = "Consulente")
         {
             string doc = cnpj != null ? "<Cnpj>" + cnpj + "</Cnpj>" : "<Cpf>" + cpf + "</Cpf>";
             return "<ConsultarNfseServicoTomadoEnvio><" + elemento + "><CpfCnpj>" + doc + "</CpfCnpj></" + elemento + ">" +
-                   Periodo(ini, fim) + "<Pagina>" + pagina + "</Pagina></ConsultarNfseServicoTomadoEnvio>";
+                   Periodo(ini, fim) + "<Pagina>1</Pagina></ConsultarNfseServicoTomadoEnvio>";
         }
 
         public static string PedidoCancelar(PrestadorTeste p, long numero, string motivo = "Servico nao prestado")
@@ -98,19 +97,9 @@ namespace NotaCarioca.Testes.Integracao.Infra
             return Doc(xml).SelectNodes(xpath).Count;
         }
 
-        public static string CodigoErro(string xml)
-        {
-            return Texto(xml, "//ListaMensagemRetorno/MensagemRetorno/Codigo");
-        }
-
         public static void AssertErro(string codigoEsperado, string resposta)
         {
-            Assert.AreEqual(codigoEsperado, CodigoErro(resposta), resposta);
-        }
-
-        public static bool CasaFormato(string valor, string regex)
-        {
-            return valor != null && Regex.IsMatch(valor, regex);
+            Assert.AreEqual(codigoEsperado, Texto(resposta, "//ListaMensagemRetorno/MensagemRetorno/Codigo"), resposta);
         }
     }
 }

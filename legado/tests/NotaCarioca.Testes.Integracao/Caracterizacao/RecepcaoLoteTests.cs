@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NotaCarioca.Testes.Integracao.Infra;
 using Oracle.ManagedDataAccess.Client;
@@ -57,9 +58,8 @@ namespace NotaCarioca.Testes.Integracao.Caracterizacao
 
             Assert.AreEqual("37", Ws.Texto(resposta, "/EnviarLoteRpsResposta/NumeroLote"));
             string protocolo = Ws.Texto(resposta, "/EnviarLoteRpsResposta/Protocolo");
-            Assert.IsTrue(Ws.CasaFormato(protocolo, "^NC" + Sql.AgoraBanco().ToString("yyyyMM", CultureInfo.InvariantCulture) + "\\d{8}$"), protocolo);
-            Assert.IsTrue(Ws.CasaFormato(Ws.Texto(resposta, "/EnviarLoteRpsResposta/DataRecebimento"),
-                "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$"), resposta);
+            StringAssert.Matches(protocolo, new Regex("^NC" + Sql.AgoraBanco().ToString("yyyyMM", CultureInfo.InvariantCulture) + "\\d{8}$"));
+            StringAssert.Matches(Ws.Texto(resposta, "/EnviarLoteRpsResposta/DataRecebimento"), new Regex("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$"));
             Assert.AreEqual(2m, Sql.Decimal("SELECT QTD_RPS FROM LOTES_RPS WHERE PROTOCOLO = :p", new OracleParameter("p", protocolo)));
 
             string situacao = Ws.ConsultarSituacaoLoteRps(Ws.PedidoConsultarLote(p, protocolo, "ConsultarSituacaoLoteRpsEnvio"));
@@ -71,13 +71,12 @@ namespace NotaCarioca.Testes.Integracao.Caracterizacao
         public void Lote_SemErros()
         {
             PrestadorTeste p = Fabrica.CriarPrestador();
-            DateTime agora = Sql.AgoraBanco();
             string tomadorZero = Fabrica.NovoCnpj(zeroAEsquerda: true);
             string tomadorCpf = Fabrica.NovoCpf();
             LoteXml lote = new LoteXml(p, 5)
-                .Rps(1, valor: 1500m, item: "17.01", tomadorCnpj: tomadorZero, dataEmissao: agora)
-                .Rps(2, valor: 320.50m, deducoes: 20.50m, item: "01.07", retido: true, tomadorCpf: tomadorCpf, dataEmissao: agora)
-                .Rps(3, valor: 1000m, item: "01.01", dataEmissao: agora);
+                .Rps(1, valor: 1500m, item: "17.01", tomadorCnpj: tomadorZero)
+                .Rps(2, valor: 320.50m, deducoes: 20.50m, item: "01.07", retido: true, tomadorCpf: tomadorCpf)
+                .Rps(3, valor: 1000m, item: "01.01");
 
             string protocolo = Ws.EnviarEProcessar(lote);
 
@@ -88,7 +87,8 @@ namespace NotaCarioca.Testes.Integracao.Caracterizacao
             Assert.AreEqual(3, Ws.Contar(resposta, "/ConsultarLoteRpsResposta/ListaNfse/CompNfse"));
             Assert.AreEqual(0, Ws.Contar(resposta, "//ListaMensagemRetorno"));
 
-            string competencia = agora.ToString("yyyy-MM-01'T'00:00:00", CultureInfo.InvariantCulture);
+            DateTime comp = Sql.CompetenciaAtual();
+            string competencia = comp.ToString("yyyy-MM-dd'T'00:00:00", CultureInfo.InvariantCulture);
             string esperado =
                 "<ConsultarLoteRpsResposta><ListaNfse>" +
                 Nota(p, 1, competencia, "1500.00", "0.00", "1500.00", "0.05", "75.00", "2", "17.01", "Servico de teste 1", "Cnpj", tomadorZero.TrimStart('0')) +
@@ -97,7 +97,6 @@ namespace NotaCarioca.Testes.Integracao.Caracterizacao
                 "</ListaNfse></ConsultarLoteRpsResposta>";
             Assert.AreEqual(esperado, Exemplos.NormalizarEmissao(resposta));
 
-            DateTime comp = new DateTime(agora.Year, agora.Month, 1);
             Assert.AreEqual(95.00m, Sql.ValorGuia(p.Id, comp));
             Assert.AreEqual(comp.AddMonths(1).AddDays(9), Convert.ToDateTime(Sql.Escalar(
                 "SELECT DT_VENCIMENTO FROM GUIAS WHERE PRESTADOR_ID = :p", new OracleParameter("p", p.Id))));

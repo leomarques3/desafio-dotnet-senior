@@ -49,7 +49,7 @@ namespace NotaCarioca.Testes.Integracao.Infra
             return CpfComDv(raiz);
         }
 
-        public static string CnpjComDv(string base12)
+        private static string CnpjComDv(string base12)
         {
             int[] p1 = { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
             int[] p2 = { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
@@ -63,7 +63,7 @@ namespace NotaCarioca.Testes.Integracao.Infra
             return base12 + d1 + d2;
         }
 
-        public static string CpfComDv(string base9)
+        private static string CpfComDv(string base9)
         {
             int s = 0;
             for (int i = 0; i < 9; i++) s += (base9[i] - '0') * (10 - i);

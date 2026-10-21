@@ -22,12 +22,11 @@ namespace NotaCarioca.Testes.Integracao.Infra
         }
 
         public LoteXml Rps(long numero, string serie = "T1", decimal valor = 1000m, decimal deducoes = 0m,
-                           bool retido = false, string item = "17.01", string tomadorCnpj = null, string tomadorCpf = null,
-                           DateTime? dataEmissao = null, string discriminacao = null)
+                           bool retido = false, string item = "17.01", string tomadorCnpj = null, string tomadorCpf = null)
         {
             if (tomadorCnpj == null && tomadorCpf == null) tomadorCnpj = "11222333000181";
-            if (dataEmissao == null && _agoraBanco == null) _agoraBanco = Sql.AgoraBanco();
-            DateTime data = dataEmissao ?? _agoraBanco.Value;
+            if (_agoraBanco == null) _agoraBanco = Sql.AgoraBanco();
+            DateTime data = _agoraBanco.Value;
             _quantidade++;
             _rps.Append("<Rps><InfRps Id=\"rps").Append(numero).Append("\">")
                 .Append("<IdentificacaoRps><Numero>").Append(numero).Append("</Numero><Serie>").Append(Esc(serie))
@@ -37,7 +36,7 @@ namespace NotaCarioca.Testes.Integracao.Infra
                 .Append("</ValorServicos><ValorDeducoes>").Append(deducoes.ToString("0.00", Inv))
                 .Append("</ValorDeducoes><IssRetido>").Append(retido ? "1" : "2").Append("</IssRetido></Valores>")
                 .Append("<ItemListaServico>").Append(Esc(item)).Append("</ItemListaServico>")
-                .Append("<Discriminacao>").Append(Esc(discriminacao ?? "Servico de teste " + numero)).Append("</Discriminacao></Servico>")
+                .Append("<Discriminacao>").Append("Servico de teste " + numero).Append("</Discriminacao></Servico>")
                 .Append("<Tomador><IdentificacaoTomador><CpfCnpj>");
             if (tomadorCnpj != null) _rps.Append("<Cnpj>").Append(Esc(tomadorCnpj)).Append("</Cnpj>");
             else _rps.Append("<Cpf>").Append(Esc(tomadorCpf)).Append("</Cpf>");
