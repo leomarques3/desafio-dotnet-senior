@@ -13,8 +13,7 @@ Public Class CalculoIss
             Return 0D
         End If
 
-        Dim valor As Double = CDbl(baseCalculo) * CDbl(aliquota)
-        Return CDec(Math.Round(valor, 2))
+        Return Math.Round(baseCalculo * aliquota, 2, MidpointRounding.AwayFromZero)
     End Function
 
     Public Shared Function AliquotaEfetiva(ByVal aliquotaItem As Decimal, ByVal regime As String) As Decimal
