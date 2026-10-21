@@ -1,0 +1,54 @@
+Sem o hint e sem TRUNC, ainda com o documento como numero
+
+tomador 01234567000195, 2026-10-01 a 2026-10-31: 20 chamadas, HTTP 200, 2 notas na pagina 1, media 104 ms, min 80 ms, max 447 ms
+tomador 11444777000161, 2026-09-01 a 2026-09-30: 20 chamadas, HTTP 200, 50 notas na pagina 1, media 93 ms, min 89 ms, max 103 ms
+
+== consulta de servicos tomados como a aplicacao envia (ultimo cursor)
+
+SQL_ID	      CHILD_NUMBER EXECUTIONS BUFFER_GETS_POR_EXEC MS_POR_EXEC
+------------- ------------ ---------- -------------------- -----------
+5cn2ds3b5utwt		 0	   40		     17033	    92
+
+Plan hash value: 478987145
+
+-----------------------------------------------------------------------------------------------------------------
+| Id  | Operation				   | Name		| Rows	| Bytes | Cost (%CPU)| Time	|
+-----------------------------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT			   |			|	|	| 16130 (100)|		|
+|   1 |  TABLE ACCESS BY INDEX ROWID		   | NFSE		|     1 |    10 |     3   (0)| 00:00:01 |
+|*  2 |   INDEX UNIQUE SCAN			   | PK_NFSE		|     1 |	|     2   (0)| 00:00:01 |
+|*  3 |  VIEW					   |			|     1 |   674 | 16130   (1)| 00:00:01 |
+|*  4 |   COUNT STOPKEY 			   |			|	|	|	     |		|
+|   5 |    VIEW 				   |			|     1 |   661 | 16130   (1)| 00:00:01 |
+|*  6 |     SORT ORDER BY STOPKEY		   |			|     1 |   610 | 16130   (1)| 00:00:01 |
+|*  7 |      FILTER				   |			|	|	|	     |		|
+|   8 |       NESTED LOOPS			   |			|     1 |   610 | 16126   (1)| 00:00:01 |
+|   9 |        NESTED LOOPS			   |			|     1 |   610 | 16126   (1)| 00:00:01 |
+|  10 | 	TABLE ACCESS BY INDEX ROWID BATCHED| NFSE		|     1 |   552 | 16125   (1)| 00:00:01 |
+|* 11 | 	 INDEX SKIP SCAN		   | IX_NFSE_TOMADOR_DT |     1 |	| 16124   (1)| 00:00:01 |
+|* 12 | 	INDEX UNIQUE SCAN		   | PK_CONTRIBUINTES	|     1 |	|     0   (0)|		|
+|  13 |        TABLE ACCESS BY INDEX ROWID	   | CONTRIBUINTES	|     1 |    58 |     1   (0)| 00:00:01 |
+-----------------------------------------------------------------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   2 - access("S"."ID"=:B1)
+   3 - filter("RN">:DESLOCAMENTO)
+   4 - filter(ROWNUM<=:LIMITE)
+   6 - filter(ROWNUM<=:LIMITE)
+   7 - filter(:FIM>:INI)
+  11 - access("N"."DT_EMISSAO">=:INI AND "N"."DT_EMISSAO"<:FIM)
+       filter(("N"."DT_EMISSAO">=:INI AND TO_NUMBER("N"."TOMADOR_DOCUMENTO")=:DOC AND
+	      "N"."DT_EMISSAO"<:FIM))
+  12 - access("P"."ID"="N"."PRESTADOR_ID")
+
+SQL Analysis Report (identified by operation id/Query Block Name/Object Alias):
+-------------------------------------------------------------------------------
+
+  10 -	SEL$37633EB5 / "N"@"SEL$3"
+	   -  The following columns have predicates which preclude their
+	      use as keys in index range scan. Consider rewriting the
+	      predicates.
+		"TOMADOR_DOCUMENTO"
+

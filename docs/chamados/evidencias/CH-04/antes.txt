@@ -1,0 +1,63 @@
+Consulta de servicos tomados pelo servico SOAP, codigo original (tools/medicoes/medir-tomado.sh)
+
+tomador 01234567000195, 2026-10-01 a 2026-10-31: 20 chamadas, HTTP 200, 2 notas na pagina 1, media 758 ms, min 667 ms, max 1516 ms
+tomador 11444777000161, 2026-09-01 a 2026-09-30: 20 chamadas, HTTP 200, 50 notas na pagina 1, media 736 ms, min 677 ms, max 965 ms
+
+Plano do cursor da aplicacao depois da ultima chamada (tools/diagnostico/ch04_plano.sql)
+== consulta de servicos tomados como a aplicacao envia (ultimo cursor)
+
+SQL_ID	      CHILD_NUMBER EXECUTIONS BUFFER_GETS_POR_EXEC MS_POR_EXEC
+------------- ------------ ---------- -------------------- -----------
+gkt2rqm1njrdt		 0	   45		    158178	 764.2
+
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SQL_ID	gkt2rqm1njrdt, child number 0
+-------------------------------------
+SELECT * FROM (  SELECT a.*, ROWNUM RN FROM (	-- hint pedido pelo DBA
+(2018)	 SELECT /*+ FULL(n) */ n.ID, n.PRESTADOR_ID, n.NUMERO,
+n.CODIGO_VERIFICACAO, n.DT_EMISSAO, n.COMPETENCIA, n.ITEM_SERVICO,
+n.DISCRIMINACAO, n.VALOR_SERVICOS, n.VALOR_DEDUCOES, n.BASE_CALCULO,
+n.ALIQUOTA, n.VALOR_ISS, n.ISS_RETIDO, n.TOMADOR_DOCUMENTO,
+n.TOMADOR_RAZAO, n.SITUACAO, n.DT_CANCELAMENTO, (SELECT s.NUMERO FROM
+NFSE s WHERE s.ID = n.NFSE_SUBSTITUIDORA_ID) AS NUM_SUBSTITUIDORA,
+p.DOCUMENTO AS PRESTADOR_DOC, p.INSCRICAO_MUNICIPAL AS PRESTADOR_IM,
+p.RAZAO_SOCIAL AS PRESTADOR_RAZAO     FROM NFSE n JOIN CONTRIBUINTES p
+ON p.ID = n.PRESTADOR_ID    WHERE n.TOMADOR_DOCUMENTO = :doc	  AND
+TRUNC(n.DT_EMISSAO) >= :ini AND TRUNC(n.DT_EMISSAO) < :fim    ORDER BY
+n.DT_EMISSAO, n.ID  ) a WHERE ROWNUM <= :limite ) WHERE RN >
+:deslocamento
+
+Plan hash value: 3469257388
+
+------------------------------------------------------------------------------------------------------
+| Id  | Operation			  | Name	     | Rows  | Bytes | Cost (%CPU)| Time     |
+------------------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT		  |		     |	     |	     | 43869 (100)|	     |
+|   1 |  TABLE ACCESS BY INDEX ROWID	  | NFSE	     |	   1 |	  10 |	   3   (0)| 00:00:01 |
+|*  2 |   INDEX UNIQUE SCAN		  | PK_NFSE	     |	   1 |	     |	   2   (0)| 00:00:01 |
+|*  3 |  VIEW				  |		     |	   1 |	 674 | 43869   (1)| 00:00:02 |
+|*  4 |   COUNT STOPKEY 		  |		     |	     |	     |		  |	     |
+|   5 |    VIEW 			  |		     |	   1 |	 661 | 43869   (1)| 00:00:02 |
+|*  6 |     SORT ORDER BY STOPKEY	  |		     |	   1 |	 610 | 43869   (1)| 00:00:02 |
+|*  7 |      FILTER			  |		     |	     |	     |		  |	     |
+|   8 |       NESTED LOOPS		  |		     |	   1 |	 610 | 43865   (1)| 00:00:02 |
+|   9 |        NESTED LOOPS		  |		     |	   1 |	 610 | 43865   (1)| 00:00:02 |
+|* 10 | 	TABLE ACCESS FULL	  | NFSE	     |	   1 |	 552 | 43864   (1)| 00:00:02 |
+|* 11 | 	INDEX UNIQUE SCAN	  | PK_CONTRIBUINTES |	   1 |	     |	   0   (0)|	     |
+|  12 |        TABLE ACCESS BY INDEX ROWID| CONTRIBUINTES    |	   1 |	  58 |	   1   (0)| 00:00:01 |
+------------------------------------------------------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   2 - access("S"."ID"=:B1)
+   3 - filter("RN">:DESLOCAMENTO)
+   4 - filter(ROWNUM<=:LIMITE)
+   6 - filter(ROWNUM<=:LIMITE)
+   7 - filter(:FIM>:INI)
+  10 - filter((TO_NUMBER("N"."TOMADOR_DOCUMENTO")=:DOC AND
+	      TRUNC(INTERNAL_FUNCTION("N"."DT_EMISSAO"))>=:INI AND
+	      TRUNC(INTERNAL_FUNCTION("N"."DT_EMISSAO"))<:FIM))
+  11 - access("P"."ID"="N"."PRESTADOR_ID")
+

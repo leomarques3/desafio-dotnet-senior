@@ -1,0 +1,24 @@
+Formato de NFSE.TOMADOR_DOCUMENTO no banco local com a carga de volume
+
+== tamanho
+
+   TAMANHO	NOTAS
+---------- ----------
+	11     990221
+	14    1010362
+== fora do formato de 11 ou 14 digitos
+
+     NOTAS
+----------
+	 0
+== com zero a esquerda
+
+   TAMANHO	NOTAS
+---------- ----------
+	11     990155
+	14     100483
+== CNPJ que comeca com 000 e CPF com o mesmo valor numerico
+
+     PARES
+----------
+	 0

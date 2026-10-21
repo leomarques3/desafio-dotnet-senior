@@ -1,0 +1,173 @@
+===== 1) ORIGINAL (FULL + TRUNC + bind numerico)
+
+  COUNT(*)
+----------
+	51
+
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SQL_ID	5vxtswpvwgrd1, child number 0
+-------------------------------------
+SELECT /* CH04_ORIGINAL */ COUNT(*) FROM (SELECT * FROM ( SELECT a.*,
+ROWNUM RN FROM (   SELECT /*+ GATHER_PLAN_STATISTICS FULL(n) */ n.ID,
+n.PRESTADOR_ID, n.NUMERO, n.CODIGO_VERIFICACAO, n.DT_EMISSAO,
+n.COMPETENCIA, n.ITEM_SERVICO, n.DISCRIMINACAO, n.VALOR_SERVICOS,
+n.VALOR_DEDUCOES, n.BASE_CALCULO, n.ALIQUOTA, n.VALOR_ISS,
+n.ISS_RETIDO, n.TOMADOR_DOCUMENTO, n.TOMADOR_RAZAO, n.SITUACAO,
+n.DT_CANCELAMENTO, (SELECT s.NUMERO FROM NFSE s WHERE s.ID =
+n.NFSE_SUBSTITUIDORA_ID) AS NUM_SUBSTITUIDORA, p.DOCUMENTO AS
+PRESTADOR_DOC, p.INSCRICAO_MUNICIPAL AS PRESTADOR_IM, p.RAZAO_SOCIAL AS
+PRESTADOR_RAZAO     FROM NFSE n JOIN CONTRIBUINTES p ON p.ID =
+n.PRESTADOR_ID	  WHERE n.TOMADOR_DOCUMENTO = :docn	 AND
+TRUNC(n.DT_EMISSAO) >= TO_DATE(:ini,'YYYY-MM-DD') AND
+TRUNC(n.DT_EMISSAO) < TO_DATE(:fim,'YYYY-MM-DD')    ORDER BY
+n.DT_EMISSAO, n.ID ) a WHERE ROWNUM <= :limite) WHERE RN >
+:deslocamento)
+
+Plan hash value: 2221366272
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+| Id  | Operation		  | Name	  | Starts | E-Rows | A-Rows |	 A-Time   | Buffers | Reads  |	OMem |	1Mem | Used-Mem |
+-----------------------------------------------------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT	  |		  |	 1 |	    |	   1 |00:00:00.48 |	161K|	 161K|	     |	     |		|
+|   1 |  SORT AGGREGATE 	  |		  |	 1 |	  1 |	   1 |00:00:00.48 |	161K|	 161K|	     |	     |		|
+|*  2 |   VIEW			  |		  |	 1 |	  1 |	  51 |00:00:00.48 |	161K|	 161K|	     |	     |		|
+|*  3 |    COUNT STOPKEY	  |		  |	 1 |	    |	  51 |00:00:00.48 |	161K|	 161K|	     |	     |		|
+|   4 |     VIEW		  |		  |	 1 |	  1 |	  51 |00:00:00.48 |	161K|	 161K|	     |	     |		|
+|*  5 |      SORT ORDER BY STOPKEY|		  |	 1 |	  1 |	  51 |00:00:00.48 |	161K|	 161K|	6144 |	6144 | 6144  (0)|
+|*  6 |       FILTER		  |		  |	 1 |	    |	 768 |00:00:00.48 |	161K|	 161K|	     |	     |		|
+|*  7 |        HASH JOIN	  |		  |	 1 |	  1 |	 768 |00:00:00.48 |	161K|	 161K|	1476K|	1476K| 1364K (0)|
+|*  8 | 	TABLE ACCESS FULL | NFSE	  |	 1 |	  1 |	 768 |00:00:00.23 |	161K|	 161K|	     |	     |		|
+|   9 | 	TABLE ACCESS FULL | CONTRIBUINTES |	 1 |	  1 |	5030 |00:00:00.01 |	 52 |	  50 |	     |	     |		|
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   2 - filter("RN">:DESLOCAMENTO)
+   3 - filter(ROWNUM<=:LIMITE)
+   5 - filter(ROWNUM<=:LIMITE)
+   6 - filter(TO_DATE(:FIM,'YYYY-MM-DD')>TO_DATE(:INI,'YYYY-MM-DD'))
+   7 - access("P"."ID"="N"."PRESTADOR_ID")
+   8 - filter((TO_NUMBER("N"."TOMADOR_DOCUMENTO")=:DOCN AND TRUNC(INTERNAL_FUNCTION("N"."DT_EMISSAO"))>=TO_DATE(:INI,'YYYY-MM-DD'
+	      ) AND TRUNC(INTERNAL_FUNCTION("N"."DT_EMISSAO"))<TO_DATE(:FIM,'YYYY-MM-DD')))
+
+
+BUFFER_GETS MS_POR_EXEC
+----------- -----------
+     161546	  484.5
+===== 2) PR-118 (INDEX hint + TRUNC + bind numerico)
+
+  COUNT(*)
+----------
+	51
+
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SQL_ID	g0s0ukv63z6u3, child number 0
+-------------------------------------
+SELECT /* CH04_PR118 */ COUNT(*) FROM (SELECT * FROM ( SELECT a.*,
+ROWNUM RN FROM (   SELECT /*+ GATHER_PLAN_STATISTICS INDEX(n
+IX_NFSE_TOMADOR_DT) */ n.ID, n.PRESTADOR_ID, n.NUMERO,
+n.CODIGO_VERIFICACAO, n.DT_EMISSAO, n.COMPETENCIA, n.ITEM_SERVICO,
+n.DISCRIMINACAO, n.VALOR_SERVICOS, n.VALOR_DEDUCOES, n.BASE_CALCULO,
+n.ALIQUOTA, n.VALOR_ISS, n.ISS_RETIDO, n.TOMADOR_DOCUMENTO,
+n.TOMADOR_RAZAO, n.SITUACAO, n.DT_CANCELAMENTO, (SELECT s.NUMERO FROM
+NFSE s WHERE s.ID = n.NFSE_SUBSTITUIDORA_ID) AS NUM_SUBSTITUIDORA,
+p.DOCUMENTO AS PRESTADOR_DOC, p.INSCRICAO_MUNICIPAL AS PRESTADOR_IM,
+p.RAZAO_SOCIAL AS PRESTADOR_RAZAO     FROM NFSE n JOIN CONTRIBUINTES p
+ON p.ID = n.PRESTADOR_ID    WHERE n.TOMADOR_DOCUMENTO = :docn	   AND
+TRUNC(n.DT_EMISSAO) >= TO_DATE(:ini,'YYYY-MM-DD') AND
+TRUNC(n.DT_EMISSAO) < TO_DATE(:fim,'YYYY-MM-DD')    ORDER BY
+n.DT_EMISSAO, n.ID ) a WHERE ROWNUM <= :limite) WHERE RN >
+:deslocamento)
+
+Plan hash value: 2221366272
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+| Id  | Operation		  | Name	  | Starts | E-Rows | A-Rows |	 A-Time   | Buffers | Reads  |	OMem |	1Mem | Used-Mem |
+-----------------------------------------------------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT	  |		  |	 1 |	    |	   1 |00:00:00.18 |	161K|	 161K|	     |	     |		|
+|   1 |  SORT AGGREGATE 	  |		  |	 1 |	  1 |	   1 |00:00:00.18 |	161K|	 161K|	     |	     |		|
+|*  2 |   VIEW			  |		  |	 1 |	  1 |	  51 |00:00:00.18 |	161K|	 161K|	     |	     |		|
+|*  3 |    COUNT STOPKEY	  |		  |	 1 |	    |	  51 |00:00:00.18 |	161K|	 161K|	     |	     |		|
+|   4 |     VIEW		  |		  |	 1 |	  1 |	  51 |00:00:00.18 |	161K|	 161K|	     |	     |		|
+|*  5 |      SORT ORDER BY STOPKEY|		  |	 1 |	  1 |	  51 |00:00:00.18 |	161K|	 161K|	6144 |	6144 | 6144  (0)|
+|*  6 |       FILTER		  |		  |	 1 |	    |	 768 |00:00:00.18 |	161K|	 161K|	     |	     |		|
+|*  7 |        HASH JOIN	  |		  |	 1 |	  1 |	 768 |00:00:00.18 |	161K|	 161K|	1476K|	1476K| 1362K (0)|
+|*  8 | 	TABLE ACCESS FULL | NFSE	  |	 1 |	  1 |	 768 |00:00:00.09 |	161K|	 161K|	     |	     |		|
+|   9 | 	TABLE ACCESS FULL | CONTRIBUINTES |	 1 |	  1 |	5030 |00:00:00.01 |	 52 |	   0 |	     |	     |		|
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   2 - filter("RN">:DESLOCAMENTO)
+   3 - filter(ROWNUM<=:LIMITE)
+   5 - filter(ROWNUM<=:LIMITE)
+   6 - filter(TO_DATE(:FIM,'YYYY-MM-DD')>TO_DATE(:INI,'YYYY-MM-DD'))
+   7 - access("P"."ID"="N"."PRESTADOR_ID")
+   8 - filter((TO_NUMBER("N"."TOMADOR_DOCUMENTO")=:DOCN AND TRUNC(INTERNAL_FUNCTION("N"."DT_EMISSAO"))>=TO_DATE(:INI,'YYYY-MM-DD'
+	      ) AND TRUNC(INTERNAL_FUNCTION("N"."DT_EMISSAO"))<TO_DATE(:FIM,'YYYY-MM-DD')))
+
+
+BUFFER_GETS MS_POR_EXEC
+----------- -----------
+     161223	  179.8
+===== 3) PROPOSTA (sem hint, faixa de data, bind VARCHAR2)
+
+  COUNT(*)
+----------
+	51
+
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SQL_ID	8h9hjw9gw8w0k, child number 0
+-------------------------------------
+SELECT /* CH04_PROPOSTA */ COUNT(*) FROM (SELECT * FROM ( SELECT a.*,
+ROWNUM RN FROM (   SELECT /*+ GATHER_PLAN_STATISTICS  */ n.ID,
+n.PRESTADOR_ID, n.NUMERO, n.CODIGO_VERIFICACAO, n.DT_EMISSAO,
+n.COMPETENCIA, n.ITEM_SERVICO, n.DISCRIMINACAO, n.VALOR_SERVICOS,
+n.VALOR_DEDUCOES, n.BASE_CALCULO, n.ALIQUOTA, n.VALOR_ISS,
+n.ISS_RETIDO, n.TOMADOR_DOCUMENTO, n.TOMADOR_RAZAO, n.SITUACAO,
+n.DT_CANCELAMENTO, (SELECT s.NUMERO FROM NFSE s WHERE s.ID =
+n.NFSE_SUBSTITUIDORA_ID) AS NUM_SUBSTITUIDORA, p.DOCUMENTO AS
+PRESTADOR_DOC, p.INSCRICAO_MUNICIPAL AS PRESTADOR_IM, p.RAZAO_SOCIAL AS
+PRESTADOR_RAZAO     FROM NFSE n JOIN CONTRIBUINTES p ON p.ID =
+n.PRESTADOR_ID	  WHERE n.TOMADOR_DOCUMENTO = :docs	 AND
+n.DT_EMISSAO >= TO_DATE(:ini,'YYYY-MM-DD') AND n.DT_EMISSAO <
+TO_DATE(:fim,'YYYY-MM-DD')    ORDER BY n.DT_EMISSAO, n.ID ) a WHERE
+ROWNUM <= :limite) WHERE RN > :deslocamento)
+
+Plan hash value: 3820634026
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Id  | Operation				   | Name		| Starts | E-Rows | A-Rows |   A-Time	| Buffers | Reads  |  OMem |  1Mem | Used-Mem |
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT			   |			|      1 |	  |	 1 |00:00:00.02 |     827 |    521 |	   |	   |	      |
+|   1 |  SORT AGGREGATE 			   |			|      1 |	1 |	 1 |00:00:00.02 |     827 |    521 |	   |	   |	      |
+|*  2 |   VIEW					   |			|      1 |	1 |	51 |00:00:00.02 |     827 |    521 |	   |	   |	      |
+|*  3 |    COUNT STOPKEY			   |			|      1 |	  |	51 |00:00:00.02 |     827 |    521 |	   |	   |	      |
+|   4 |     VIEW				   |			|      1 |	1 |	51 |00:00:00.02 |     827 |    521 |	   |	   |	      |
+|*  5 |      SORT ORDER BY STOPKEY		   |			|      1 |	1 |	51 |00:00:00.02 |     827 |    521 |  6144 |  6144 | 6144  (0)|
+|*  6 |       FILTER				   |			|      1 |	  |    768 |00:00:00.02 |     827 |    521 |	   |	   |	      |
+|*  7 |        HASH JOIN			   |			|      1 |	1 |    768 |00:00:00.02 |     827 |    521 |  1476K|  1476K| 1331K (0)|
+|   8 | 	TABLE ACCESS BY INDEX ROWID BATCHED| NFSE		|      1 |	1 |    768 |00:00:00.01 |     775 |    521 |	   |	   |	      |
+|*  9 | 	 INDEX RANGE SCAN		   | IX_NFSE_TOMADOR_DT |      1 |	1 |    768 |00:00:00.01 |	9 |	 0 |	   |	   |	      |
+|  10 | 	TABLE ACCESS FULL		   | CONTRIBUINTES	|      1 |	1 |   5030 |00:00:00.01 |      52 |	 0 |	   |	   |	      |
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   2 - filter("RN">:DESLOCAMENTO)
+   3 - filter(ROWNUM<=:LIMITE)
+   5 - filter(ROWNUM<=:LIMITE)
+   6 - filter(TO_DATE(:FIM,'YYYY-MM-DD')>TO_DATE(:INI,'YYYY-MM-DD'))
+   7 - access("P"."ID"="N"."PRESTADOR_ID")
+   9 - access("N"."TOMADOR_DOCUMENTO"=:DOCS AND "N"."DT_EMISSAO">=TO_DATE(:INI,'YYYY-MM-DD') AND "N"."DT_EMISSAO"<TO_DATE(:FIM,'YYYY-MM-DD'))
+
+
+BUFFER_GETS MS_POR_EXEC
+----------- -----------
+	947	   19.8
