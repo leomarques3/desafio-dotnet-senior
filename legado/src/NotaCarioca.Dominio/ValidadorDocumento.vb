@@ -12,6 +12,20 @@ Public Class ValidadorDocumento
         Return sb.ToString()
     End Function
 
+    Public Shared Function Normalizar(ByVal doc As String) As String
+        Dim d As String = SemMascara(doc)
+        If CnpjAlfanumerico(d) Then Return d
+        Return SomenteDigitos(doc)
+    End Function
+
+    Public Shared Function EhAlfanumerico(ByVal doc As String) As Boolean
+        If doc Is Nothing Then Return False
+        For Each c As Char In doc
+            If Char.IsLetter(c) Then Return True
+        Next
+        Return False
+    End Function
+
     Public Shared Function ParaNumero(ByVal doc As String) As Long
         Dim d As String = SomenteDigitos(doc)
         If d = "" Then Return 0
@@ -45,7 +59,7 @@ Public Class ValidadorDocumento
         If doc Is Nothing Then Return False
         Dim d As String = doc.Trim().Replace(".", "").Replace("/", "").Replace("-", "")
         If d.Length <> 14 Then Return False
-        If Not IsNumeric(d) Then Return False
+        If Not IsNumeric(d) Then Return CnpjAlfanumerico(d.ToUpperInvariant())
         If CLng(d) = 0 Then Return False
         If TodosIguais(d) Then Return False
 
@@ -70,10 +84,42 @@ Public Class ValidadorDocumento
     End Function
 
     Public Shared Function ValidarCpfOuCnpj(ByVal doc As String) As Boolean
+        If CnpjAlfanumerico(SemMascara(doc)) Then Return True
         Dim d As String = SomenteDigitos(doc)
         If d.Length = 11 Then Return ValidarCpf(d)
         If d.Length = 14 Then Return ValidarCnpj(d)
         Return False
+    End Function
+
+    Private Shared Function SemMascara(ByVal doc As String) As String
+        If doc Is Nothing Then Return ""
+        Return doc.Trim().Replace(".", "").Replace("/", "").Replace("-", "").Replace(" ", "").ToUpperInvariant()
+    End Function
+
+    Private Shared Function CnpjAlfanumerico(ByVal d As String) As Boolean
+        If d.Length <> 14 Then Return False
+        Dim temLetra As Boolean = False
+        For i As Integer = 0 To 13
+            Dim c As Char = d(i)
+            If c >= "A"c AndAlso c <= "Z"c AndAlso i < 12 Then
+                temLetra = True
+            ElseIf c < "0"c OrElse c > "9"c Then
+                Return False
+            End If
+        Next
+        If Not temLetra Then Return False
+        Return DigitoCnpj(d, 12) = AscW(d(12)) - 48 AndAlso DigitoCnpj(d, 13) = AscW(d(13)) - 48
+    End Function
+
+    Private Shared Function DigitoCnpj(ByVal d As String, ByVal tamanho As Integer) As Integer
+        Dim soma As Integer = 0
+        Dim peso As Integer = 2
+        For i As Integer = tamanho - 1 To 0 Step -1
+            soma += (AscW(d(i)) - 48) * peso
+            peso = If(peso = 9, 2, peso + 1)
+        Next
+        Dim resto As Integer = soma Mod 11
+        Return If(resto < 2, 0, 11 - resto)
     End Function
 
     Private Shared Function TodosIguais(ByVal d As String) As Boolean

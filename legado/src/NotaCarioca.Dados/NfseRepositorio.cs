@@ -34,7 +34,7 @@ namespace NotaCarioca.Dados
                 cmd.Parameters.Add(OracleHelper.P("p_aliquota", OracleDbType.Decimal, aliquota));
                 cmd.Parameters.Add(OracleHelper.P("p_valor_iss", OracleDbType.Decimal, valorIss));
                 cmd.Parameters.Add(OracleHelper.P("p_iss_retido", OracleDbType.Varchar2, issRetido ? "S" : "N"));
-                cmd.Parameters.Add(OracleHelper.P("p_tomador_doc", OracleDbType.Varchar2, ValidadorDocumento.SomenteDigitos(tomadorDoc)));
+                cmd.Parameters.Add(OracleHelper.P("p_tomador_doc", OracleDbType.Varchar2, ValidadorDocumento.Normalizar(tomadorDoc)));
                 cmd.Parameters.Add(OracleHelper.P("p_tomador_razao", OracleDbType.Varchar2, tomadorRazao));
 
                 OracleParameter oId = new OracleParameter("o_nfse_id", OracleDbType.Int64);
@@ -123,7 +123,7 @@ namespace NotaCarioca.Dados
                     OracleHelper.P("prest", prestadorId),
                     OracleHelper.P("fim", OracleDbType.Date, fim.Date),
                     OracleHelper.P("ini", OracleDbType.Date, ini.Date),
-                    OracleHelper.P("doc", ValidadorDocumento.SomenteDigitos(tomadorDoc)),
+                    OracleHelper.P("doc", ValidadorDocumento.Normalizar(tomadorDoc)),
                     OracleHelper.P("limite", pagina * TamanhoPagina + 1),
                     OracleHelper.P("deslocamento", (pagina - 1) * TamanhoPagina)
                 };
@@ -156,7 +156,7 @@ namespace NotaCarioca.Dados
                 ") WHERE RN > :deslocamento";
 
             return OracleHelper.ExecuteDataTable(sql,
-                OracleHelper.P("doc", OracleDbType.Varchar2, ValidadorDocumento.SomenteDigitos(tomadorDoc)),
+                OracleHelper.P("doc", OracleDbType.Varchar2, ValidadorDocumento.Normalizar(tomadorDoc)),
                 OracleHelper.P("ini", OracleDbType.Date, ini.Date),
                 OracleHelper.P("fim", OracleDbType.Date, fim.Date),
                 OracleHelper.P("limite", pagina * TamanhoPagina + 1),

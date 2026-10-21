@@ -91,9 +91,11 @@ namespace NotaCarioca.Servicos
 
             string docOriginal = Convert.ToString(r["TOMADOR_DOCUMENTO"]);
             string tag = docOriginal.Length > 11 ? "Cnpj" : "Cpf";
-            string docNumero = Convert.ToInt64(r["TOMADOR_DOCUMENTO"]).ToString();
+            string docSaida = ValidadorDocumento.EhAlfanumerico(docOriginal)
+                ? Esc(docOriginal)
+                : Convert.ToInt64(r["TOMADOR_DOCUMENTO"]).ToString();
             sb.Append("<TomadorServico><IdentificacaoTomador><CpfCnpj>");
-            sb.Append("<").Append(tag).Append(">").Append(docNumero).Append("</").Append(tag).Append(">");
+            sb.Append("<").Append(tag).Append(">").Append(docSaida).Append("</").Append(tag).Append(">");
             sb.Append("</CpfCnpj></IdentificacaoTomador>");
             sb.Append("<RazaoSocial>").Append(Esc(Convert.ToString(r["TOMADOR_RAZAO"]))).Append("</RazaoSocial>");
             sb.Append("</TomadorServico>");
