@@ -9,6 +9,9 @@
     <ProjectReference Include="..\NotaCarioca.Dados\NotaCarioca.Dados.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="NotaCarioca.Testes.Integracao" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="System.Xml" Condition="'$(TargetFramework)' == 'net48'" />
     <Reference Include="System.Data" Condition="'$(TargetFramework)' == 'net48'" />
   </ItemGroup>

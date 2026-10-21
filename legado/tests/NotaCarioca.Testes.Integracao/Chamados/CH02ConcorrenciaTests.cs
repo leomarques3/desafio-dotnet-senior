@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NotaCarioca.Dados;
+using NotaCarioca.Servicos;
 using NotaCarioca.Testes.Integracao.Infra;
 using Oracle.ManagedDataAccess.Client;
 
@@ -136,6 +137,19 @@ namespace NotaCarioca.Testes.Integracao.Chamados
             ConferirLote(semErro, protocoloSemErro, 40, 0);
             ConferirLote(umErro, protocoloUmErro, 39, 1);
             ConferirLote(soErros, protocoloSoErros, 0, 40);
+        }
+
+        [TestMethod]
+        public void MesmoLote_DuasVezes()
+        {
+            PrestadorTeste p = Fabrica.CriarPrestador();
+            string protocolo = Ws.Enviar(new LoteXml(p).Rps(1).Rps(2));
+            ProcessadorLoteRps processador = new ProcessadorLoteRps();
+
+            processador.ProcessarLote(protocolo);
+            processador.ProcessarLote(protocolo);
+
+            ConferirLote(p, protocolo, 2, 0);
         }
 
         private static void ConferirLote(PrestadorTeste p, string protocolo, int notas, int erros)

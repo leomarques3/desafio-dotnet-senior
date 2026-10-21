@@ -48,7 +48,7 @@ namespace NotaCarioca.Servicos
             }
         }
 
-        private void ProcessarLote(string protocolo)
+        internal void ProcessarLote(string protocolo)
         {
             DateTime inicio = DateTime.Now;
             string xml = _lotes.ObterXml(protocolo);
