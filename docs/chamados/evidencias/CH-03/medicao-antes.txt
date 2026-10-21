@@ -1,0 +1,80 @@
+=== medir-lote.sh 10000 1
+lotes: 1 x 10000 RPS (13 MB cada), limite: 3072 MiB
+recepcao: 1s, total: 12s, pico de memoria: 519 MiB
+resultado: processado
+
+PROTOCOLO			  QTD_RPS   SITUACAO
+------------------------------ ---------- ----------
+NC20261000001254		    10000	   4
+[15:12:29] processando lote NC20261000001254 (10000 RPS)
+[15:12:36] lote NC20261000001254 concluido em 7.1s: 10000 resultados, 0 com erro
+
+=== medir-lote.sh 50000 1
+lotes: 1 x 50000 RPS (65 MB cada), limite: 3072 MiB
+recepcao: 3s, total: 38s, pico de memoria: 1308 MiB
+resultado: processado
+
+PROTOCOLO			  QTD_RPS   SITUACAO
+------------------------------ ---------- ----------
+NC20261000001255		    50000	   4
+[15:12:47] processando lote NC20261000001255 (50000 RPS)
+[15:13:18] lote NC20261000001255 concluido em 32.9s: 50000 resultados, 0 com erro
+
+=== medir-lote.sh 50000 2
+lotes: 2 x 50000 RPS (65 MB cada), limite: 3072 MiB
+recepcao: 6s, total: 49s, pico de memoria: 2012 MiB
+resultado: processado
+
+PROTOCOLO			  QTD_RPS   SITUACAO
+------------------------------ ---------- ----------
+NC20261000001256		    50000	   4
+NC20261000001257		    50000	   4
+[15:13:41] processando lote NC20261000001257 (50000 RPS)
+[15:13:41] processando lote NC20261000001256 (50000 RPS)
+[15:14:20] lote NC20261000001256 concluido em 40.5s: 50000 resultados, 0 com erro
+[15:14:20] lote NC20261000001257 concluido em 40.6s: 50000 resultados, 0 com erro
+
+=== medir-lote.sh 10000 1 10000025 MERRO (segundo envio da mesma serie: todos os RPS com E060)
+lotes: 1 x 10000 RPS (14 MB cada), limite: 3072 MiB
+recepcao: 1s, total: 10s, pico de memoria: 572 MiB
+resultado: processado
+
+PROTOCOLO			  QTD_RPS   SITUACAO
+------------------------------ ---------- ----------
+NC20261000001259		    10000	   3
+[15:14:48] processando lote NC20261000001259 (10000 RPS)
+[15:14:54] lote NC20261000001259 concluido em 6.4s: 10000 resultados, 10000 com erro
+
+=== medir-lote.sh 50000 1 10000025 MERR5 (segundo envio da mesma serie: todos os RPS com E060)
+lotes: 1 x 50000 RPS (81 MB cada), limite: 3072 MiB
+recepcao: 4s, total: 120s, pico de memoria: 1632 MiB
+resultado: processado
+
+PROTOCOLO			  QTD_RPS   SITUACAO
+------------------------------ ---------- ----------
+NC20261000001261		    50000	   3
+[15:15:54] processando lote NC20261000001261 (50000 RPS)
+[15:17:46] lote NC20261000001261 concluido em 113.7s: 50000 resultados, 50000 com erro
+
+=== docker update --memory 1g; medir-lote.sh 50000 1
+lotes: 1 x 50000 RPS (65 MB cada), limite: 1024 MiB
+recepcao: 2s, total: 2s, pico de memoria: 48 MiB
+resultado: sem protocolo
+resposta do envio: soap:Fault 'Erro interno: Exception of type System.OutOfMemoryException was thrown.'
+log: OutOfMemoryException em LoteRepositorio.Inserir (gravacao do CLOB) chamado por RecepcaoLoteServico.Recepcionar
+
+=== docker update --memory 1536m; medir-lote.sh 50000 1
+lotes: 1 x 50000 RPS (65 MB cada), limite: 1536 MiB
+recepcao: 3s, total: 36s, pico de memoria: 1062 MiB
+resultado: processado
+
+PROTOCOLO			  QTD_RPS   SITUACAO
+------------------------------ ---------- ----------
+NC20261000001263		    50000	   4
+[15:18:22] processando lote NC20261000001263 (50000 RPS)
+[15:18:52] lote NC20261000001263 concluido em 31.4s: 50000 resultados, 0 com erro
+
+=== docker update --memory 1536m; medir-lote.sh 50000 2
+lotes: 2 x 50000 RPS (65 MB cada), limite: 1536 MiB
+recepcao: 4s, total: 4s, pico de memoria: 1022 MiB
+resultado: sem protocolo

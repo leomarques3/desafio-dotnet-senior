@@ -1,0 +1,9 @@
+Lote de 10 RPS (prestador 10000026) enviado cerca de 20s depois de um lote de 50000 RPS, com o agendador da Fase 4b
+(tick ignorado enquanto o anterior roda, e ProcessarPendentes espera todos os lotes do tick)
+
+lote pequeno NC20261000001266 processado 16s depois do envio
+
+[15:19:26] processando lote NC20261000001265 (50000 RPS)
+[15:19:55] lote NC20261000001265 concluido em 31.2s: 50000 resultados, 0 com erro
+[15:19:56] processando lote NC20261000001266 (10 RPS)
+[15:19:56] lote NC20261000001266 concluido em 0.0s: 10 resultados, 0 com erro

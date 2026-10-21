@@ -1,0 +1,10 @@
+Leitura do lote de 50000 RPS (65 MB, 67 milhoes de caracteres) na recepcao, medida com dotnet fsi
+
+DOM: 50000 RPS, 145 MB alocados, 289 MB retidos
+XmlReader: 50000 RPS, 2 MB alocados, 3 MB retidos
+
+Gravacao do mesmo XML no CLOB pelo ODP.NET
+
+string inteira: 386 MB alocados, 1157 ms
+OracleClob em partes: 258 MB alocados, 2160 ms
+xml: 128 MB de texto (67490378 chars)

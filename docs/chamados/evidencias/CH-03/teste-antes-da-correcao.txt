@@ -1,0 +1,5 @@
+Lote_MilharesDeErros no codigo original (lote de 5000 RPS, todos com E062)
+
+  Failed Lote_MilharesDeErros [2 s]
+   Assert.IsTrue failed. 6625 MB alocados
+ [15:22:14] lote NC20261000001267 concluido em 1.8s: 5000 resultados, 5000 com erro

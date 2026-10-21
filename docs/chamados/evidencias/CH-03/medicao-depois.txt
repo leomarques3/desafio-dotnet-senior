@@ -1,0 +1,78 @@
+=== medir-lote.sh 10000 1
+lotes: 1 x 10000 RPS (13 MB cada), limite: 3072 MiB
+recepcao: 1s, total: 12s, pico de memoria: 806 MiB
+resultado: processado
+
+PROTOCOLO			  QTD_RPS   SITUACAO
+------------------------------ ---------- ----------
+NC20261000001301		    10000	   4
+[15:25:54] processando lote NC20261000001301 (10000 RPS)
+[15:26:02] lote NC20261000001301 concluido em 7.9s: 10000 resultados, 0 com erro
+
+=== medir-lote.sh 50000 1
+lotes: 1 x 50000 RPS (65 MB cada), limite: 3072 MiB
+recepcao: 4s, total: 43s, pico de memoria: 1627 MiB
+resultado: processado
+
+PROTOCOLO			  QTD_RPS   SITUACAO
+------------------------------ ---------- ----------
+NC20261000001302		    50000	   4
+[15:26:11] processando lote NC20261000001302 (50000 RPS)
+[15:26:49] lote NC20261000001302 concluido em 37.6s: 50000 resultados, 0 com erro
+
+=== medir-lote.sh 50000 2
+lotes: 2 x 50000 RPS (65 MB cada), limite: 3072 MiB
+recepcao: 5s, total: 53s, pico de memoria: 1746 MiB
+resultado: processado
+
+PROTOCOLO			  QTD_RPS   SITUACAO
+------------------------------ ---------- ----------
+NC20261000001303		    50000	   4
+NC20261000001304		    50000	   3
+[15:26:58] processando lote NC20261000001304 (50000 RPS)
+[15:27:00] falha no lote NC20261000001304: Exception of type 'System.OutOfMemoryException' was thrown.
+[15:27:00] processando lote NC20261000001303 (50000 RPS)
+[15:27:00] processando lote NC20261000001304 (50000 RPS)
+[15:27:45] lote NC20261000001304 concluido em 45.3s: 50000 resultados, 1903 com erro
+[15:27:46] lote NC20261000001303 concluido em 46.0s: 50000 resultados, 0 com erro
+
+=== docker update --memory 1024m; medir-lote.sh 50000 1
+lotes: 1 x 50000 RPS (65 MB cada), limite: 1024 MiB
+recepcao: 3s, total: 3s, pico de memoria: 403 MiB
+resultado: sem protocolo
+OutOfMemory no log: 2
+
+=== docker update --memory 1024m; medir-lote.sh 50000 2
+lotes: 2 x 50000 RPS (65 MB cada), limite: 1024 MiB
+recepcao: 3s, total: 3s, pico de memoria: 608 MiB
+resultado: sem protocolo
+OutOfMemory no log: 4
+
+=== docker update --memory 1536m; medir-lote.sh 50000 1
+lotes: 1 x 50000 RPS (65 MB cada), limite: 1536 MiB
+recepcao: 3s, total: 42s, pico de memoria: 925 MiB
+resultado: processado
+
+PROTOCOLO			  QTD_RPS   SITUACAO
+------------------------------ ---------- ----------
+NC20261000001307		    50000	   4
+[15:28:15] processando lote NC20261000001307 (50000 RPS)
+[15:28:52] lote NC20261000001307 concluido em 37.1s: 50000 resultados, 0 com erro
+OutOfMemory no log: 4
+
+=== docker update --memory 1536m; medir-lote.sh 50000 2
+lotes: 2 x 50000 RPS (65 MB cada), limite: 1536 MiB
+recepcao: 3s, total: 3s, pico de memoria: 45 MiB
+resultado: sem protocolo
+OutOfMemory no log: 6
+
+=== medir-lote.sh 50000 1 10000027 MERR6 (segundo envio da mesma serie: todos os RPS com E060)
+lotes: 1 x 50000 RPS (81 MB cada), limite: 3072 MiB
+recepcao: 3s, total: 25s, pico de memoria: 1565 MiB
+resultado: processado
+
+PROTOCOLO			  QTD_RPS   SITUACAO
+------------------------------ ---------- ----------
+NC20261000001317		    50000	   3
+[15:33:40] processando lote NC20261000001317 (50000 RPS)
+[15:33:59] lote NC20261000001317 concluido em 19.2s: 50000 resultados, 50000 com erro

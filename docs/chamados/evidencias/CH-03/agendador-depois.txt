@@ -1,0 +1,22 @@
+Lote de 10 RPS (prestador 10000026) enviado cerca de 20s depois de um lote de 50000 RPS, com o agendador novo
+
+lote pequeno NC20261000001309 processado 1s depois do envio
+[15:30:31] processando lote NC20261000001308 (50000 RPS)
+[15:30:49] processando lote NC20261000001309 (10 RPS)
+[15:30:49] lote NC20261000001309 concluido em 0.1s: 10 resultados, 0 com erro
+[15:31:09] lote NC20261000001308 concluido em 37.5s: 50000 resultados, 0 com erro
+
+Seis lotes de 10000 RPS enviados juntos (medir-lote.sh 10000 6), limite padrao de 4 lotes em paralelo
+
+[15:31:26] processando lote NC20261000001312 (10000 RPS)
+[15:31:26] processando lote NC20261000001310 (10000 RPS)
+[15:31:26] processando lote NC20261000001311 (10000 RPS)
+[15:31:26] processando lote NC20261000001313 (10000 RPS)
+[15:31:44] lote NC20261000001310 concluido em 18.2s: 10000 resultados, 0 com erro
+[15:31:44] lote NC20261000001311 concluido em 18.4s: 10000 resultados, 0 com erro
+[15:31:44] lote NC20261000001313 concluido em 18.5s: 10000 resultados, 0 com erro
+[15:31:44] lote NC20261000001312 concluido em 18.6s: 10000 resultados, 0 com erro
+[15:31:46] processando lote NC20261000001315 (10000 RPS)
+[15:31:46] processando lote NC20261000001314 (10000 RPS)
+[15:31:55] lote NC20261000001314 concluido em 9.7s: 10000 resultados, 0 com erro
+[15:31:55] lote NC20261000001315 concluido em 9.9s: 10000 resultados, 0 com erro
