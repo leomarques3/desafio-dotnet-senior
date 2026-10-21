@@ -1,0 +1,34 @@
+V005 original depois da V006 e da V007 (CH-01), numa transacao desfeita no fim
+
+== antes: condicao do laco da V005
+
+GUIAS_NA_CONDICAO_DA_V005
+-------------------------
+			0
+== cancela uma nota do prestador 10000001 em 09/2026; a trigger recalcula a guia
+
+GUIAS_NA_CONDICAO_DA_V005
+-------------------------
+			1
+== recalcula a guia, como a V005 faz em cada volta do laco
+
+GUIAS_NA_CONDICAO_DA_V005
+-------------------------
+			1
+== recalcula de novo
+
+GUIAS_NA_CONDICAO_DA_V005
+-------------------------
+			1
+
+V005 corrigida, com uma nota cancelada do prestador 10000002 em 10/2026 (commit)
+== primeira execucao
+guias corrigidas: 1
+tempo: 0s
+== segunda execucao
+guias corrigidas: 1
+
+VALOR_ANTES VALOR_DEPOIS DT_AJUST
+----------- ------------ --------
+     589.42	  589.42 14:55:35
+     589.42	  589.42 14:55:36

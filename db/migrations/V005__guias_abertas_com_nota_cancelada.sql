@@ -18,6 +18,7 @@ DECLARE
     TYPE t_guias IS TABLE OF GUIAS%ROWTYPE;
     v_guias t_guias;
     v_total NUMBER := 0;
+    v_inicio DATE := SYSDATE;
 BEGIN
     LOOP
         SELECT g.*
@@ -30,6 +31,7 @@ BEGIN
                                  FROM NFSE n
                                 WHERE n.PRESTADOR_ID = g.PRESTADOR_ID AND n.COMPETENCIA = g.COMPETENCIA
                                   AND n.SITUACAO = 'N' AND n.ISS_RETIDO = 'N')
+           AND NOT EXISTS (SELECT 1 FROM AJUSTE_GUIA_CH05 a WHERE a.GUIA_ID = g.ID AND a.DT_AJUSTE >= v_inicio)
          FETCH FIRST 500 ROWS ONLY;
 
         EXIT WHEN v_guias.COUNT = 0;
