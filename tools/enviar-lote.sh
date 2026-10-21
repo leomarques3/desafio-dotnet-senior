@@ -13,7 +13,7 @@ trap 'rm -f "$TMP"' EXIT
   printf '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body>'
   printf '<RecepcionarLoteRpsRequest xmlns="http://notacarioca.rio.gov.br/"><inputXML>'
   # remove a declaracao XML e escapa o conteudo
-  sed -e '1{/^<?xml/d}' "$ARQUIVO" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
+  sed -e '1{/^<?xml/d;}' "$ARQUIVO" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
   printf '</inputXML></RecepcionarLoteRpsRequest></soap:Body></soap:Envelope>'
 } > "$TMP"
 
