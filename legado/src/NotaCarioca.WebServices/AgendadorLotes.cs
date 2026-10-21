@@ -9,9 +9,13 @@ namespace NotaCarioca.WebServices
         private static Timer _timer;
         private static ProcessadorLoteRps _processador = new ProcessadorLoteRps();
         private static int _rodando;
+        private static int _maximo = 4;
 
         public static void Iniciar()
         {
+            int maximo;
+            if (int.TryParse(Environment.GetEnvironmentVariable("NFSE_MAX_LOTES_PARALELOS"), out maximo) && maximo > 0)
+                _maximo = maximo;
             _timer = new Timer(Tick, null, 2000, 2000);
         }
 
@@ -20,7 +24,7 @@ namespace NotaCarioca.WebServices
             if (Interlocked.CompareExchange(ref _rodando, 1, 0) != 0) return;
             try
             {
-                _processador.ProcessarPendentes();
+                _processador.IniciarPendentes(_maximo);
             }
             catch (Exception ex)
             {

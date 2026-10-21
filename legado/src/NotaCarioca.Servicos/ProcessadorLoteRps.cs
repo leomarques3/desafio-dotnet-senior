@@ -19,34 +19,48 @@ namespace NotaCarioca.Servicos
         private GuiaRepositorio _guias = new GuiaRepositorio();
         private ContribuinteRepositorio _contribuintes = new ContribuinteRepositorio();
 
+        private static int _emAndamento;
+
         // processa os lotes pendentes em paralelo, um thread por lote (vazao no fechamento do mes)
         public void ProcessarPendentes()
         {
-            List<string> pendentes = _lotes.ObterPendentes();
-            if (pendentes.Count == 0) return;
-
-            Thread[] threads = new Thread[pendentes.Count];
-            for (int i = 0; i < pendentes.Count; i++)
-            {
-                string protocolo = pendentes[i];
-                threads[i] = new Thread(delegate ()
-                {
-                    try
-                    {
-                        ProcessarLote(protocolo);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("[{0:HH:mm:ss}] falha no lote {1}: {2}", DateTime.Now, protocolo, ex.Message);
-                        try { _lotes.AtualizarSituacao(protocolo, 1); } catch (Exception) { }
-                    }
-                });
-                threads[i].Start();
-            }
-            foreach (Thread th in threads)
+            foreach (Thread th in IniciarPendentes(int.MaxValue))
             {
                 th.Join();
             }
+        }
+
+        public List<Thread> IniciarPendentes(int maximo)
+        {
+            List<Thread> threads = new List<Thread>();
+            foreach (string protocolo in _lotes.ObterPendentes())
+            {
+                if (Interlocked.Increment(ref _emAndamento) > maximo)
+                {
+                    Interlocked.Decrement(ref _emAndamento);
+                    break;
+                }
+                string p = protocolo;
+                Thread th = new Thread(delegate ()
+                {
+                    try
+                    {
+                        ProcessarLote(p);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("[{0:HH:mm:ss}] falha no lote {1}: {2}", DateTime.Now, p, ex.Message);
+                        try { _lotes.AtualizarSituacao(p, 1); } catch (Exception) { }
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref _emAndamento);
+                    }
+                });
+                th.Start();
+                threads.Add(th);
+            }
+            return threads;
         }
 
         internal void ProcessarLote(string protocolo)
