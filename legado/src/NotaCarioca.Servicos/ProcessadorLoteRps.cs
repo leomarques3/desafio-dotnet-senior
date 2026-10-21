@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Text;
 using System.Threading;
 using System.Xml;
 using NotaCarioca.Dados;
@@ -90,14 +91,14 @@ namespace NotaCarioca.Servicos
                 _guias.Recalcular(prestadorId, comp);
             }
 
-            string erros = "";
+            StringBuilder erros = new StringBuilder();
             int qtdErros = 0;
             for (int i = 0; i < resultados.Count; i++)
             {
                 ResultadoRps r = resultados[i];
                 if (!r.Sucesso)
                 {
-                    erros += XmlNfseBuilder.MensagemRps(r);
+                    erros.Append(XmlNfseBuilder.MensagemRps(r));
                     qtdErros++;
                 }
             }
