@@ -147,11 +147,10 @@ namespace NotaCarioca.Dados
             string sql =
                 "SELECT * FROM (\n" +
                 " SELECT a.*, ROWNUM RN FROM (\n" +
-                "  -- hint pedido pelo DBA (2018)\n" +
-                "  SELECT /*+ FULL(n) */ " + Colunas + "\n" +
+                "  SELECT " + Colunas + "\n" +
                 "    FROM NFSE n JOIN CONTRIBUINTES p ON p.ID = n.PRESTADOR_ID\n" +
                 "   WHERE n.TOMADOR_DOCUMENTO = :doc\n" +
-                "     AND TRUNC(n.DT_EMISSAO) >= :ini AND TRUNC(n.DT_EMISSAO) < :fim\n" +
+                "     AND n.DT_EMISSAO >= :ini AND n.DT_EMISSAO < :fim\n" +
                 "   ORDER BY n.DT_EMISSAO, n.ID\n" +
                 " ) a WHERE ROWNUM <= :limite\n" +
                 ") WHERE RN > :deslocamento";
