@@ -1,0 +1,29 @@
+Levantamento antes da correcao (tools/diagnostico/ch01_impacto.sql), banco local
+== notas com ISS diferente de ROUND(base x aliquota, 2)
+
+     NOTAS CONTRIBUINTES  DIFERENCA PRIMEIRA		ULTIMA
+---------- ------------- ---------- ------------------- -------------------
+	40	       4	 .4 2026-08-13 09:00:00 2026-10-21 14:23:07
+== guias diferentes da soma do ISS das notas, por situacao
+
+S      GUIAS CONTRIBUINTES COBRADO_A_MAIS DESDE 	      ATE
+- ---------- ------------- -------------- ------------------- -------------------
+A	   4		 4	       .4 2026-08-01 00:00:00 2026-10-01 00:00:00
+== guias pagas diferentes da soma (para a fiscalizacao)
+
+Por prestador e competencia:
+
+INSCRICA COMPETE      NOTAS  DIFERENCA
+-------- ------- ---------- ----------
+10000013 2026-08	  1	   .01
+10000001 2026-09	  5	   .05
+10000002 2026-10	  2	   .02
+10000027 2026-10	 32	   .32
+
+    NUMERO BASE_CALCULO   ALIQUOTA   ISS_NOTA  ISS_ROUND
+---------- ------------ ---------- ---------- ----------
+       101	 1793.5        .03	 53.8	   53.81
+       113	 1793.5        .03	 53.8	   53.81
+       679	1245.25        .02	 24.9	   24.91
+      1174	 1793.5        .03	 53.8	   53.81
+      1185	 1793.5        .03	 53.8	   53.81

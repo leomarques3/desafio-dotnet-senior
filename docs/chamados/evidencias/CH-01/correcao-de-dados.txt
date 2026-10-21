@@ -1,0 +1,56 @@
+== GUIAS (total) e abertas
+
+     GUIAS    ABERTAS
+---------- ----------
+    120303	10293
+== V007, primeira execucao
+
+PL/SQL procedure successfully completed.
+
+guias corrigidas: 6
+
+PL/SQL procedure successfully completed.
+
+tempo: 7s
+
+INSCRICA COMPETE VALOR_ANTES VALOR_DEPOIS
+-------- ------- ----------- ------------
+10000013 2026-08     1205.33	  1205.32
+10000001 2026-09     1028.86	  1028.81
+10000002 2026-10      953.01	   952.99
+10000027 2026-10   1243397.2   1243396.88
+90100192 2026-10	 .53	      .52
+90100193 2026-10	 150	   149.99
+== V007, segunda execucao
+
+PL/SQL procedure successfully completed.
+
+guias corrigidas: 0
+
+PL/SQL procedure successfully completed.
+
+== levantamento depois
+== guias diferentes da soma do ISS das notas, por situacao
+== guias pagas diferentes da soma (para a fiscalizacao)
+== rollback
+
+PL/SQL procedure successfully completed.
+
+== guia x soma do ISS das notas
+
+COMPETENCIA	   S	   GUIA SOMA_NOTAS
+------------------ - ---------- ----------
+01-SEP-26	   A	1028.86    1028.81
+== V007 de novo
+
+PL/SQL procedure successfully completed.
+
+guias corrigidas: 6
+
+PL/SQL procedure successfully completed.
+
+== guia x soma do ISS das notas
+
+COMPETENCIA	   S	   GUIA SOMA_NOTAS
+------------------ - ---------- ----------
+01-SEP-26	   A	1028.81    1028.81

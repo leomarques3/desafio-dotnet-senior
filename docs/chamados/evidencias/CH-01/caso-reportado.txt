@@ -1,0 +1,15 @@
+Caso reportado: prestador 10000001, competencia 09/2026 (tools/diagnostico/ch01_caso.sql 10000001 2026-09)
+== guia x soma do ISS das notas
+
+COMPETENCIA	   S	   GUIA SOMA_NOTAS
+------------------ - ---------- ----------
+01-SEP-26	   A	1028.86    1028.81
+== notas com ISS diferente de ROUND(base x aliquota, 2)
+
+    NUMERO DT_EMISSAO	      BASE_CALCULO   ALIQUOTA	ISS_NOTA  ISS_ROUND
+---------- ------------------ ------------ ---------- ---------- ----------
+	16 21-SEP-26		      10.5	  .05	     .52	.53
+	17 21-SEP-26		     250.5	  .05	   12.52      12.53
+	18 22-SEP-26		     100.1	  .05	       5       5.01
+	19 23-SEP-26		    1234.5	  .03	   37.03      37.04
+	20 24-SEP-26		     375.5	  .03	   11.26      11.27

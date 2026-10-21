@@ -1,0 +1,19 @@
+Testes no codigo original (net8.0)
+
+Unitario:
+  Failed Iss_MeioCentavo
+  Assert.AreEqual failed. Expected:<0,53>. Actual:<0,52>.
+
+CalculoIss.CalcularValorIss original para os 5 casos do seed:
+10.50 x 0.05 = 0.52
+250.50 x 0.05 = 12.52
+100.10 x 0.05 = 5
+1234.50 x 0.03 = 37.03
+375.50 x 0.03 = 11.26
+
+Integracao:
+  Failed Lote_IssMeioCentavo
+   Assert.AreEqual failed. Expected:<0,53>. Actual:<0,52>.
+  Failed Guia_SomaIssDasNotas
+   Assert.AreEqual failed. Expected:<149,99>. Actual:<150>.
+Failed!  - Failed:     2, Passed:    47, Skipped:     0, Total:    49
