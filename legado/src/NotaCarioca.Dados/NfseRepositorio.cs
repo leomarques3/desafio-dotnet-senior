@@ -156,7 +156,7 @@ namespace NotaCarioca.Dados
                 ") WHERE RN > :deslocamento";
 
             return OracleHelper.ExecuteDataTable(sql,
-                OracleHelper.P("doc", OracleDbType.Int64, ValidadorDocumento.ParaNumero(tomadorDoc)),
+                OracleHelper.P("doc", OracleDbType.Varchar2, ValidadorDocumento.SomenteDigitos(tomadorDoc)),
                 OracleHelper.P("ini", OracleDbType.Date, ini.Date),
                 OracleHelper.P("fim", OracleDbType.Date, fim.Date),
                 OracleHelper.P("limite", pagina * TamanhoPagina + 1),
