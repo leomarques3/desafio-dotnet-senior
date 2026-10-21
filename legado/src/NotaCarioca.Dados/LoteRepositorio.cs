@@ -45,6 +45,13 @@ namespace NotaCarioca.Dados
             return lista;
         }
 
+        public bool Reservar(string protocolo)
+        {
+            int linhas = OracleHelper.ExecuteNonQuery("UPDATE LOTES_RPS SET SITUACAO = 2 WHERE PROTOCOLO = :prot AND SITUACAO = 1",
+                OracleHelper.P("prot", protocolo));
+            return linhas == 1;
+        }
+
         public string ObterXml(string protocolo)
         {
             object o = OracleHelper.ExecuteScalar("SELECT XML_LOTE FROM LOTES_RPS WHERE PROTOCOLO = :prot",
