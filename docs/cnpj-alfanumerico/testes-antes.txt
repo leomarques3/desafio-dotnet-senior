@@ -1,0 +1,17 @@
+Testes do CNPJ alfanumerico no codigo original (net8.0)
+
+Unitario:
+  Failed CnpjAlfanumerico_Valido
+   Assert.IsTrue failed.
+Failed!  - Failed:     1, Passed:    18, Skipped:     1, Total:    20
+
+Integracao:
+  Failed Lote_TomadorAlfanumerico
+   Assert.AreEqual failed. Expected:<1>. Actual:<0>. <ConsultarLoteRpsResposta><ListaNfse></ListaNfse><ListaMensagemRetorno><MensagemRetorno>...<Codigo>E020</Codigo>
+  Failed ConsultarNfse_TomadorAlfanumerico
+   Assert.AreEqual failed. Expected:<1>. Actual:<0>. <ConsultarNfseResposta><ListaMensagemRetorno><MensagemRetorno><Codigo>E020</Codigo><Mensagem>CPF/CNPJ inválido.</Mensagem>
+  Failed ServicoTomado_ConsulenteAlfanumerico
+   Assert.AreEqual failed. Expected:<2>. Actual:<0>. <ConsultarNfseServicoTomadoResposta><ListaMensagemRetorno><MensagemRetorno><Codigo>E020</Codigo>
+Failed!  - Failed:     3, Passed:    52, Skipped:     0, Total:    55
+
+Prestador_Alfanumerico passa no codigo original: o prestador e identificado pela inscricao municipal e o CNPJ dele so e repetido na resposta.

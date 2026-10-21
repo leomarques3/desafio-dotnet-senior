@@ -1,0 +1,66 @@
+== V008
+
+Session altered.
+
+
+PL/SQL procedure successfully completed.
+
+tempo: 0s
+== V008 de novo
+
+Session altered.
+
+
+PL/SQL procedure successfully completed.
+
+== rollback
+
+Session altered.
+
+
+PL/SQL procedure successfully completed.
+
+== rollback de novo
+
+Session altered.
+
+
+PL/SQL procedure successfully completed.
+
+== V008 depois do rollback
+
+Session altered.
+
+
+PL/SQL procedure successfully completed.
+
+
+       RPS
+----------
+       685
+
+COLUMN_NAME
+--------------------------------------------------------------------------------------------------------------------------------
+DATA_TYPE															 DATA_LENGTH N
+-------------------------------------------------------------------------------------------------------------------------------- ----------- -
+TOMADOR_CNPJ
+NUMBER																	  22 Y
+
+TOMADOR_CPF
+NUMBER																	  22 Y
+
+TOMADOR_RAZAO
+VARCHAR2																 150 Y
+
+
+COLUMN_NAME
+--------------------------------------------------------------------------------------------------------------------------------
+DATA_TYPE															 DATA_LENGTH N
+-------------------------------------------------------------------------------------------------------------------------------- ----------- -
+TOMADOR_DOCUMENTO
+VARCHAR2																  14 Y
+
+
+COLUNAS_NAO_USADAS
+------------------
+		 1
