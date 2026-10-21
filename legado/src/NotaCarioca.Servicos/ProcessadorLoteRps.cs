@@ -12,8 +12,6 @@ namespace NotaCarioca.Servicos
 {
     public class ProcessadorLoteRps
     {
-        private static List<ResultadoRps> _resultados = new List<ResultadoRps>();
-
         private LoteRepositorio _lotes = new LoteRepositorio();
         private RpsRepositorio _rps = new RpsRepositorio();
         private NfseRepositorio _nfse = new NfseRepositorio();
@@ -66,7 +64,7 @@ namespace NotaCarioca.Servicos
 
             Console.WriteLine("[{0:HH:mm:ss}] processando lote {1} ({2} RPS)", DateTime.Now, protocolo, lote.Rps.Count);
 
-            _resultados.Clear();
+            List<ResultadoRps> resultados = new List<ResultadoRps>();
 
             Dictionary<string, decimal> itens = new Dictionary<string, decimal>();
             foreach (DataRow r in _contribuintes.ListarItensServico().Rows)
@@ -81,7 +79,7 @@ namespace NotaCarioca.Servicos
                 {
                     ResultadoRps res = ProcessarRps(conn, rps, prestadorId, regime, protocolo, itens);
                     if (res.Sucesso) competencias.Add(Competencia.PrimeiroDia(rps.DataEmissao));
-                    _resultados.Add(res);
+                    resultados.Add(res);
                 }
             }
 
@@ -93,9 +91,9 @@ namespace NotaCarioca.Servicos
 
             string erros = "";
             int qtdErros = 0;
-            for (int i = 0; i < _resultados.Count; i++)
+            for (int i = 0; i < resultados.Count; i++)
             {
-                ResultadoRps r = _resultados[i];
+                ResultadoRps r = resultados[i];
                 if (!r.Sucesso)
                 {
                     erros += XmlNfseBuilder.MensagemRps(r);
@@ -113,7 +111,7 @@ namespace NotaCarioca.Servicos
                 _lotes.AtualizarSituacao(protocolo, 4);
             }
             Console.WriteLine("[{0:HH:mm:ss}] lote {1} concluido em {2:0.0}s: {3} resultados, {4} com erro",
-                DateTime.Now, protocolo, (DateTime.Now - inicio).TotalSeconds, _resultados.Count, qtdErros);
+                DateTime.Now, protocolo, (DateTime.Now - inicio).TotalSeconds, resultados.Count, qtdErros);
         }
 
         private ResultadoRps ProcessarRps(OracleConnection conn, RpsLote rps, long prestadorId, string regime, string protocolo, Dictionary<string, decimal> itens)
