@@ -14,14 +14,11 @@ namespace NotaCarioca.Servicos
 
         public string Recepcionar(string xml)
         {
-            XmlDocument doc;
             LoteLido cab;
             int qtd;
             try
             {
-                doc = LeitorLoteRps.Carregar(xml);
-                cab = LeitorLoteRps.LerCabecalho(doc);
-                qtd = doc.SelectNodes("/EnviarLoteRpsEnvio/LoteRps/ListaRps/Rps").Count;
+                cab = LeitorLoteRps.LerCabecalho(xml, out qtd);
             }
             catch (XmlException)
             {

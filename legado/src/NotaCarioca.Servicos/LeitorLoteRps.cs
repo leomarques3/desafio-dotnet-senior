@@ -69,6 +69,46 @@ namespace NotaCarioca.Servicos
             return XmlReader.Create(texto, cfg);
         }
 
+        public static LoteLido LerCabecalho(string xml, out int qtdRps)
+        {
+            XmlDocument cab = new XmlDocument();
+            XmlNode lote = null;
+            bool primeiroLote = false;
+            string[] caminho = new string[4];
+            qtdRps = 0;
+            using (XmlReader r = CriarLeitor(new StringReader(xml)))
+            {
+                r.Read();
+                while (!r.EOF)
+                {
+                    if (r.NodeType == XmlNodeType.Element && r.Depth <= 3)
+                    {
+                        caminho[r.Depth] = r.NamespaceURI.Length == 0 ? r.LocalName : null;
+                        if (r.Depth == 0)
+                        {
+                            cab.AppendChild(cab.CreateElement(r.Prefix, r.LocalName, r.NamespaceURI));
+                        }
+                        else if (r.Depth == 1)
+                        {
+                            primeiroLote = caminho[1] == "LoteRps" && lote == null;
+                            if (primeiroLote) lote = cab.DocumentElement.AppendChild(cab.CreateElement("LoteRps"));
+                        }
+                        else if (r.Depth == 2 && primeiroLote && caminho[2] != null && caminho[2] != "ListaRps")
+                        {
+                            lote.AppendChild(cab.ReadNode(r));
+                            continue;
+                        }
+                        else if (r.Depth == 3 && Caminho(caminho, "EnviarLoteRpsEnvio", "LoteRps", "ListaRps", "Rps"))
+                        {
+                            qtdRps++;
+                        }
+                    }
+                    r.Read();
+                }
+            }
+            return LerCabecalho(cab);
+        }
+
         public static IEnumerable<RpsLote> LerRps(XmlReader r)
         {
             XmlDocument doc = new XmlDocument();
