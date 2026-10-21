@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
+using System.Text;
 using Oracle.ManagedDataAccess.Client;
 
 namespace NotaCarioca.Dados
@@ -52,18 +54,24 @@ namespace NotaCarioca.Dados
             return linhas == 1;
         }
 
-        public string ObterXml(string protocolo)
+        public TextReader AbrirXml(OracleConnection conn, string protocolo)
         {
-            object o = OracleHelper.ExecuteScalar("SELECT XML_LOTE FROM LOTES_RPS WHERE PROTOCOLO = :prot",
-                OracleHelper.P("prot", protocolo));
-            if (o == null || o == DBNull.Value) return null;
-            return Convert.ToString(o);
+            using (OracleCommand cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT XML_LOTE FROM LOTES_RPS WHERE PROTOCOLO = :prot";
+                cmd.Parameters.Add(OracleHelper.P("prot", protocolo));
+                using (OracleDataReader dr = cmd.ExecuteReader())
+                {
+                    if (!dr.Read() || dr.IsDBNull(0)) return null;
+                    return new StreamReader(dr.GetOracleClob(0), Encoding.Unicode);
+                }
+            }
         }
 
         public DataTable ObterProcessamento(string protocolo)
         {
             return OracleHelper.ExecuteDataTable(
-                "SELECT l.PRESTADOR_ID, l.NUMERO_LOTE, c.INSCRICAO_MUNICIPAL, c.REGIME " +
+                "SELECT l.PRESTADOR_ID, l.NUMERO_LOTE, l.QTD_RPS, c.INSCRICAO_MUNICIPAL, c.REGIME " +
                 "FROM LOTES_RPS l JOIN CONTRIBUINTES c ON c.ID = l.PRESTADOR_ID WHERE l.PROTOCOLO = :prot",
                 OracleHelper.P("prot", protocolo));
         }

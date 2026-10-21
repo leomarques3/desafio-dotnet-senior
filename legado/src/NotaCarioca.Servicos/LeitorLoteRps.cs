@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Xml;
 using NotaCarioca.Servicos.Modelos;
 
@@ -12,7 +13,6 @@ namespace NotaCarioca.Servicos
         public string Cnpj;
         public string InscricaoMunicipal;
         public int QuantidadeInformada;
-        public List<RpsLote> Rps = new List<RpsLote>();
     }
 
     public static class LeitorLoteRps
@@ -59,43 +59,78 @@ namespace NotaCarioca.Servicos
             return l;
         }
 
-        public static LoteLido Ler(XmlDocument doc)
+        public static XmlReader CriarLeitor(TextReader texto)
         {
-            LoteLido l = LerCabecalho(doc);
-            XmlNodeList nos = doc.SelectNodes("/EnviarLoteRpsEnvio/LoteRps/ListaRps/Rps/InfRps");
+            XmlReaderSettings cfg = new XmlReaderSettings();
+            cfg.DtdProcessing = DtdProcessing.Parse;
+            cfg.XmlResolver = null;
+            cfg.IgnoreWhitespace = true;
+            cfg.CloseInput = true;
+            return XmlReader.Create(texto, cfg);
+        }
+
+        public static IEnumerable<RpsLote> LerRps(XmlReader r)
+        {
+            XmlDocument doc = new XmlDocument();
+            string[] caminho = new string[5];
             int i = 0;
-            foreach (XmlNode no in nos)
+            r.Read();
+            while (!r.EOF)
             {
-                RpsLote r = new RpsLote();
-                r.Indice = i++;
-                long num;
-                long.TryParse(Texto(no, "IdentificacaoRps/Numero") ?? "0", out num);
-                r.Numero = num;
-                r.Serie = Texto(no, "IdentificacaoRps/Serie") ?? "";
-                int tipo;
-                int.TryParse(Texto(no, "IdentificacaoRps/Tipo") ?? "1", out tipo);
-                r.Tipo = tipo;
-
-                DateTime dt;
-                if (!DateTime.TryParse(Texto(no, "DataEmissao"), CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
-                    dt = DateTime.Now;
-                r.DataEmissao = dt;
-
-                r.ValorServicos = Decimal(Texto(no, "Servico/Valores/ValorServicos"));
-                string ded = Texto(no, "Servico/Valores/ValorDeducoes");
-                r.ValorDeducoes = ded == null ? 0m : Decimal(ded);
-                r.IssRetido = Texto(no, "Servico/Valores/IssRetido") == "1";
-                r.ItemListaServico = Texto(no, "Servico/ItemListaServico");
-                r.Discriminacao = Texto(no, "Servico/Discriminacao");
-
-                string doc2 = Texto(no, "Tomador/IdentificacaoTomador/CpfCnpj/Cnpj");
-                if (string.IsNullOrEmpty(doc2))
-                    doc2 = Texto(no, "Tomador/IdentificacaoTomador/CpfCnpj/Cpf");
-                r.TomadorDocumento = doc2;
-                r.TomadorRazaoSocial = Texto(no, "Tomador/RazaoSocial");
-                l.Rps.Add(r);
+                if (r.NodeType == XmlNodeType.Element && r.Depth <= 4)
+                {
+                    caminho[r.Depth] = r.NamespaceURI.Length == 0 ? r.LocalName : null;
+                    if (r.Depth == 4 && caminho[4] == "InfRps" && Caminho(caminho, "EnviarLoteRpsEnvio", "LoteRps", "ListaRps", "Rps"))
+                    {
+                        if (doc.DocumentElement != null) doc.RemoveChild(doc.DocumentElement);
+                        XmlNode no = doc.AppendChild(doc.ReadNode(r));
+                        yield return LerRps(no, i++);
+                        continue;
+                    }
+                }
+                r.Read();
             }
-            return l;
+        }
+
+        private static bool Caminho(string[] caminho, params string[] nomes)
+        {
+            for (int i = 0; i < nomes.Length; i++)
+            {
+                if (caminho[i] != nomes[i]) return false;
+            }
+            return true;
+        }
+
+        private static RpsLote LerRps(XmlNode no, int indice)
+        {
+            RpsLote r = new RpsLote();
+            r.Indice = indice;
+            long num;
+            long.TryParse(Texto(no, "IdentificacaoRps/Numero") ?? "0", out num);
+            r.Numero = num;
+            r.Serie = Texto(no, "IdentificacaoRps/Serie") ?? "";
+            int tipo;
+            int.TryParse(Texto(no, "IdentificacaoRps/Tipo") ?? "1", out tipo);
+            r.Tipo = tipo;
+
+            DateTime dt;
+            if (!DateTime.TryParse(Texto(no, "DataEmissao"), CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
+                dt = DateTime.Now;
+            r.DataEmissao = dt;
+
+            r.ValorServicos = Decimal(Texto(no, "Servico/Valores/ValorServicos"));
+            string ded = Texto(no, "Servico/Valores/ValorDeducoes");
+            r.ValorDeducoes = ded == null ? 0m : Decimal(ded);
+            r.IssRetido = Texto(no, "Servico/Valores/IssRetido") == "1";
+            r.ItemListaServico = Texto(no, "Servico/ItemListaServico");
+            r.Discriminacao = Texto(no, "Servico/Discriminacao");
+
+            string doc2 = Texto(no, "Tomador/IdentificacaoTomador/CpfCnpj/Cnpj");
+            if (string.IsNullOrEmpty(doc2))
+                doc2 = Texto(no, "Tomador/IdentificacaoTomador/CpfCnpj/Cpf");
+            r.TomadorDocumento = doc2;
+            r.TomadorRazaoSocial = Texto(no, "Tomador/RazaoSocial");
+            return r;
         }
     }
 }

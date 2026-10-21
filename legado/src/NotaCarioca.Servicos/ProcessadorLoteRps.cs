@@ -54,19 +54,11 @@ namespace NotaCarioca.Servicos
             if (!_lotes.Reservar(protocolo)) return;
 
             DateTime inicio = DateTime.Now;
-            string xml = _lotes.ObterXml(protocolo);
-
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(xml);
-            LoteLido lote = LeitorLoteRps.Ler(doc);
-
             DataTable info = _lotes.ObterProcessamento(protocolo);
             long prestadorId = Convert.ToInt64(info.Rows[0]["PRESTADOR_ID"]);
             string regime = Convert.ToString(info.Rows[0]["REGIME"]);
 
-            Console.WriteLine("[{0:HH:mm:ss}] processando lote {1} ({2} RPS)", DateTime.Now, protocolo, lote.Rps.Count);
-
-            List<ResultadoRps> resultados = new List<ResultadoRps>();
+            Console.WriteLine("[{0:HH:mm:ss}] processando lote {1} ({2} RPS)", DateTime.Now, protocolo, info.Rows[0]["QTD_RPS"]);
 
             Dictionary<string, decimal> itens = new Dictionary<string, decimal>();
             foreach (DataRow r in _contribuintes.ListarItensServico().Rows)
@@ -74,14 +66,27 @@ namespace NotaCarioca.Servicos
                 itens[Convert.ToString(r["CODIGO"])] = Convert.ToDecimal(r["ALIQUOTA"]);
             }
 
+            StringBuilder erros = new StringBuilder();
+            int qtdResultados = 0;
+            int qtdErros = 0;
             HashSet<DateTime> competencias = new HashSet<DateTime>();
+            using (OracleConnection leitura = OracleHelper.AbrirConexao())
+            using (XmlReader xml = LeitorLoteRps.CriarLeitor(_lotes.AbrirXml(leitura, protocolo)))
             using (OracleConnection conn = OracleHelper.AbrirConexao())
             {
-                foreach (RpsLote rps in lote.Rps)
+                foreach (RpsLote rps in LeitorLoteRps.LerRps(xml))
                 {
                     ResultadoRps res = ProcessarRps(conn, rps, prestadorId, regime, protocolo, itens);
-                    if (res.Sucesso) competencias.Add(Competencia.PrimeiroDia(rps.DataEmissao));
-                    resultados.Add(res);
+                    qtdResultados++;
+                    if (res.Sucesso)
+                    {
+                        competencias.Add(Competencia.PrimeiroDia(rps.DataEmissao));
+                    }
+                    else
+                    {
+                        erros.Append(XmlNfseBuilder.MensagemRps(res));
+                        qtdErros++;
+                    }
                 }
             }
 
@@ -89,18 +94,6 @@ namespace NotaCarioca.Servicos
             foreach (DateTime comp in competencias)
             {
                 _guias.Recalcular(prestadorId, comp);
-            }
-
-            StringBuilder erros = new StringBuilder();
-            int qtdErros = 0;
-            for (int i = 0; i < resultados.Count; i++)
-            {
-                ResultadoRps r = resultados[i];
-                if (!r.Sucesso)
-                {
-                    erros.Append(XmlNfseBuilder.MensagemRps(r));
-                    qtdErros++;
-                }
             }
 
             if (qtdErros > 0)
@@ -113,7 +106,7 @@ namespace NotaCarioca.Servicos
                 _lotes.AtualizarSituacao(protocolo, 4);
             }
             Console.WriteLine("[{0:HH:mm:ss}] lote {1} concluido em {2:0.0}s: {3} resultados, {4} com erro",
-                DateTime.Now, protocolo, (DateTime.Now - inicio).TotalSeconds, resultados.Count, qtdErros);
+                DateTime.Now, protocolo, (DateTime.Now - inicio).TotalSeconds, qtdResultados, qtdErros);
         }
 
         private ResultadoRps ProcessarRps(OracleConnection conn, RpsLote rps, long prestadorId, string regime, string protocolo, Dictionary<string, decimal> itens)
