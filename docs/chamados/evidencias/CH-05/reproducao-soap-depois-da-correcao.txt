@@ -1,0 +1,18 @@
+CH-05 pelo SOAP depois da correcao (2026-10-21), prestador 10000025, competencia atual
+
+1) antes do cancelamento
+== guia da competencia atual
+
+      GUIA SITUACAO DT_ATUALIZACAO	  ESPERADO
+---------- -------- ------------------- ----------
+   1394.43 A	    2026-10-21 12:20:25    1394.43
+
+2) CancelarNfse da nota 4 (VALOR_ISS 373.83, nao retida)
+<CancelarNfseResposta><Cancelamento><Confirmacao><Pedido><InfPedidoCancelamento><IdentificacaoNfse><Numero>4</Numero><Cnpj>13500075000183</Cnpj><InscricaoMunicipal>10000025</InscricaoMunicipal></IdentificacaoNfse><CodigoCancelamento>1</CodigoCancelamento></InfPedidoCancelamento></Pedido><DataHora>2026-10-21T12:24:03</DataHora></Confirmacao></Cancelamento></CancelarNfseResposta>
+
+3) guia logo depois do cancelamento
+== guia da competencia atual
+
+      GUIA SITUACAO DT_ATUALIZACAO	  ESPERADO
+---------- -------- ------------------- ----------
+    1020.6 A	    2026-10-21 12:24:03     1020.6

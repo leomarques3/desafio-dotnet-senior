@@ -1,0 +1,9 @@
+Testes do CH-05 no codigo original (2026-10-21), Oracle do compose:
+
+  Failed Cancelar_AtualizaGuia [395 ms]
+  Error Message:
+   Assert.AreEqual failed. Expected:<100>. Actual:<150>. 
+  Failed CancelamentoEmMassa_AtualizaGuia [21 ms]
+  Error Message:
+   Assert.AreEqual failed. Expected:<200>. Actual:<350>. 
+Failed!  - Failed:     2, Passed:     0, Skipped:     0, Total:     2, Duration: 439 ms - NotaCarioca.Testes.Integracao.dll (net8.0)

@@ -1,0 +1,12 @@
+
+MOMENTO 				  VALOR_ISS
+---------------------------------------- ----------
+antes					    1394.43
+
+MOMENTO 				  VALOR_ISS
+---------------------------------------- ----------
+mesma transacao, apos cancelar a nota 3     1137.71
+
+MOMENTO 				  VALOR_ISS
+---------------------------------------- ----------
+apos ROLLBACK				    1394.43

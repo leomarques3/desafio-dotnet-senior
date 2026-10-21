@@ -1,0 +1,28 @@
+CH-05 reproduzido pelo SOAP (2026-10-21), prestador 10000025, competencia atual, codigo original
+
+1) antes do cancelamento
+== guia da competencia atual
+
+      GUIA SITUACAO DT_ATUALIZACAO	  ESPERADO
+---------- -------- ------------------- ----------
+   1683.58 A	    2026-10-20 22:53:08    1683.58
+
+2) CancelarNfse da nota 2 (VALOR_ISS 289.15, nao retida)
+<CancelarNfseResposta><Cancelamento><Confirmacao><Pedido><InfPedidoCancelamento><IdentificacaoNfse><Numero>2</Numero><Cnpj>13500075000183</Cnpj><InscricaoMunicipal>10000025</InscricaoMunicipal></IdentificacaoNfse><CodigoCancelamento>1</CodigoCancelamento></InfPedidoCancelamento></Pedido><DataHora>2026-10-21T12:20:21</DataHora></Confirmacao></Cancelamento></CancelarNfseResposta>
+
+3) guia logo depois do cancelamento
+== guia da competencia atual
+
+      GUIA SITUACAO DT_ATUALIZACAO	  ESPERADO
+---------- -------- ------------------- ----------
+   1683.58 A	    2026-10-21 12:20:21    1394.43
+
+4) contribuinte emite outra nota (lote com 1 RPS)
+NC20261000001123
+
+5) guia depois do processamento do lote
+== guia da competencia atual
+
+      GUIA SITUACAO DT_ATUALIZACAO	  ESPERADO
+---------- -------- ------------------- ----------
+   1394.43 A	    2026-10-21 12:20:25    1394.43

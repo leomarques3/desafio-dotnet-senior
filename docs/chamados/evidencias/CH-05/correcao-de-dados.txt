@@ -1,0 +1,33 @@
+V005 no Oracle do compose (2026-10-21). As guias afetadas foram geradas pelos testes de cancelamento rodados antes da correcao da trigger.
+
+== afetadas antes
+S      GUIAS CONTRIBUINTES COBRADO_A_MAIS DESDE 	     ATE
+- ---------- ------------- -------------- ------------------ ------------------
+A	  18		18	     1000 01-OCT-26	     01-OCT-26
+
+== aplicando V005
+guias corrigidas: 18
+  V005__guias_abertas_com_nota_cancelada: exit 0
+
+== afetadas depois
+
+== segunda execucao
+guias corrigidas: 0
+  V005__guias_abertas_com_nota_cancelada: exit 0
+
+== auditoria
+
+     GUIAS  DIFERENCA
+---------- ----------
+	18	 1000
+== rollback
+  V005__guias_abertas_com_nota_cancelada_rollback: exit 0
+
+== afetadas apos rollback
+S      GUIAS CONTRIBUINTES COBRADO_A_MAIS DESDE 	     ATE
+- ---------- ------------- -------------- ------------------ ------------------
+A	  18		18	     1000 01-OCT-26	     01-OCT-26
+
+== reaplicando
+guias corrigidas: 18
+  V005__guias_abertas_com_nota_cancelada: exit 0
