@@ -6,14 +6,42 @@ on:
   pull_request:
 
 jobs:
-  build:
+  linux:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-      - name: Build (net48 + net8.0)
+      - name: Build
         run: dotnet build legado/NotaCarioca.sln -c Release
-      - name: Testes unitarios (net8.0)
-        run: dotnet test legado/tests/NotaCarioca.Testes -c Release -f net8.0 --no-build
+      - name: Testes unitários
+        run: dotnet test legado/tests/NotaCarioca.Testes -c Release -f net8.0 --no-build --logger trx --results-directory resultados
+      - name: Testes de integração
+        run: dotnet test legado/tests/NotaCarioca.Testes.Integracao -c Release -f net8.0 --no-build --logger trx --results-directory resultados
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: resultados-linux
+          path: resultados
+
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Build
+        run: dotnet build legado/NotaCarioca.sln -c Release
+      - name: Testes unitários net48
+        run: dotnet test legado/tests/NotaCarioca.Testes -c Release -f net48 --no-build --logger trx --results-directory resultados
+      - name: Testes unitários net8.0
+        run: dotnet test legado/tests/NotaCarioca.Testes -c Release -f net8.0 --no-build --logger trx --results-directory resultados
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: resultados-windows
+          path: resultados
