@@ -1,0 +1,34 @@
+Carga de 8 lotes de 300 RPS (tools/carga-fechamento.sh 8 300) com a reserva do lote e o agendador sem sobreposicao
+
+Log do webservices:
+
+[14:23:06] processando lote NC20261000001188 (300 RPS)
+[14:23:06] processando lote NC20261000001193 (300 RPS)
+[14:23:06] processando lote NC20261000001187 (300 RPS)
+[14:23:06] processando lote NC20261000001191 (300 RPS)
+[14:23:06] processando lote NC20261000001194 (300 RPS)
+[14:23:06] processando lote NC20261000001189 (300 RPS)
+[14:23:06] processando lote NC20261000001192 (300 RPS)
+[14:23:06] processando lote NC20261000001190 (300 RPS)
+[14:23:07] lote NC20261000001192 concluido em 0.7s: 300 resultados, 150 com erro
+[14:23:07] lote NC20261000001194 concluido em 0.7s: 300 resultados, 150 com erro
+[14:23:07] lote NC20261000001187 concluido em 0.7s: 300 resultados, 150 com erro
+[14:23:07] lote NC20261000001191 concluido em 0.7s: 300 resultados, 150 com erro
+[14:23:07] lote NC20261000001190 concluido em 0.7s: 300 resultados, 150 com erro
+[14:23:07] lote NC20261000001188 concluido em 0.8s: 300 resultados, 150 com erro
+[14:23:07] lote NC20261000001193 concluido em 0.8s: 300 resultados, 150 com erro
+[14:23:07] lote NC20261000001189 concluido em 0.8s: 300 resultados, 0 com erro
+
+Banco: notas geradas pelo proprio lote e erros gravados
+
+PROTOCOLO           QTD_RPS  SITUACAO  NOTAS  ERROS
+NC20261000001187        300         3    150    150
+NC20261000001188        300         3    150    150
+NC20261000001189        300         4    300      0
+NC20261000001190        300         3    150    150
+NC20261000001191        300         3    150    150
+NC20261000001192        300         3    150    150
+NC20261000001193        300         3    150    150
+NC20261000001194        300         3    150    150
+
+Nenhum prestador com lacuna ou numero repetido. Os 4 RPS repetidos que a consulta lista sao os gravados antes da V002.

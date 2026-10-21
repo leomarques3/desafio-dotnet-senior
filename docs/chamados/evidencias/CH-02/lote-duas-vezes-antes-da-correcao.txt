@@ -1,0 +1,17 @@
+MesmoLote_DuasVezes no codigo original (lote com 2 RPS processado duas vezes)
+
+  Failed MesmoLote_DuasVezes
+  Assert.AreEqual failed. Expected:<0>. Actual:<2>. NC20261000001159
+
+ [14:21:32] processando lote NC20261000001159 (2 RPS)
+ [14:21:32] lote NC20261000001159 concluido em 0.0s: 2 resultados, 0 com erro
+ [14:21:32] processando lote NC20261000001159 (2 RPS)
+ [14:21:32] lote NC20261000001159 concluido em 0.0s: 2 resultados, 2 com erro
+
+Estado no banco depois das duas passadas:
+
+PROTOCOLO           QTD_RPS  SITUACAO  ERROS
+NC20261000001159          2         3  <ListaMensagemRetorno><MensagemRetorno>...<Numero>1</Numero>...<Codigo>E060</Codigo>
+                                       <Mensagem>RPS já informado.</Mensagem>...<Numero>2</Numero>...<Codigo>E060</Codigo>...
+
+NOTAS do protocolo: 2
