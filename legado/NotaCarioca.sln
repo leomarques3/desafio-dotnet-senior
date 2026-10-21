@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{142ADCD9
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotaCarioca.Testes", "tests\NotaCarioca.Testes\NotaCarioca.Testes.csproj", "{721D44C0-8D37-49EA-B0BD-95CF31F958F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotaCarioca.Testes.Integracao", "tests\NotaCarioca.Testes.Integracao\NotaCarioca.Testes.Integracao.csproj", "{BFCC72D3-E57D-4510-BA64-509722964D71}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{721D44C0-8D37-49EA-B0BD-95CF31F958F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{721D44C0-8D37-49EA-B0BD-95CF31F958F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{721D44C0-8D37-49EA-B0BD-95CF31F958F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFCC72D3-E57D-4510-BA64-509722964D71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFCC72D3-E57D-4510-BA64-509722964D71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFCC72D3-E57D-4510-BA64-509722964D71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFCC72D3-E57D-4510-BA64-509722964D71}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D9F1B98D-B057-4224-9DED-7003665D99EA} = {C96F590F-AFE9-47F5-8D7A-887B50138C7F}
@@ -53,5 +59,6 @@ Global
 		{2F17C2AE-610F-45CD-841E-1170F236902C} = {C96F590F-AFE9-47F5-8D7A-887B50138C7F}
 		{805DAAC2-B18A-463D-91A8-76996598AFAD} = {C96F590F-AFE9-47F5-8D7A-887B50138C7F}
 		{721D44C0-8D37-49EA-B0BD-95CF31F958F7} = {142ADCD9-E55D-4E73-99B8-5AAFC44D885B}
+		{BFCC72D3-E57D-4510-BA64-509722964D71} = {142ADCD9-E55D-4E73-99B8-5AAFC44D885B}
 	EndGlobalSection
 EndGlobal

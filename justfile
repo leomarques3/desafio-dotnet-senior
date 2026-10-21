@@ -21,6 +21,14 @@ build:
 test:
     dotnet test legado/tests/NotaCarioca.Testes -f net8.0
 
+test-integracao:
+    dotnet test legado/tests/NotaCarioca.Testes.Integracao -f net8.0
+
+test-integracao-local:
+    docker compose stop webservices
+    NFSE_TEST_CONNECTION_STRING="User Id=NFSE_OWNER;Password=nfse_dev_123;Data Source=localhost:1521/FREEPDB1;Min Pool Size=0" \
+        dotnet test legado/tests/NotaCarioca.Testes.Integracao -f net8.0; s=$?; docker compose start webservices; exit $s
+
 # sqlplus no container do Oracle
 sql:
     docker compose exec oracle sqlplus NFSE_OWNER/nfse_dev_123@//localhost:1521/FREEPDB1

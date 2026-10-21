@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net48</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>NotaCarioca.Testes.Integracao</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.6.4" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.6.4" />
+    <PackageReference Include="Testcontainers" Version="4.15.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\NotaCarioca.Dominio\NotaCarioca.Dominio.vbproj" />
+    <ProjectReference Include="..\..\src\NotaCarioca.Dados\NotaCarioca.Dados.csproj" />
+    <ProjectReference Include="..\..\src\NotaCarioca.Servicos\NotaCarioca.Servicos.csproj" />
+  </ItemGroup>
+</Project>
