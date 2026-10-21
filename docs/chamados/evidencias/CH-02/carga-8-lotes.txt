@@ -1,0 +1,18 @@
+tools/carga-fechamento.sh 8 300 (2026-10-21 11:11, codigo original): 8 lotes x 300 RPS = 2400 resultados esperados, 2393 registrados
+
+[11:11:13] processando lote NC20261000001071 (300 RPS)
+[11:11:13] processando lote NC20261000001076 (300 RPS)
+[11:11:13] processando lote NC20261000001073 (300 RPS)
+[11:11:13] processando lote NC20261000001072 (300 RPS)
+[11:11:13] processando lote NC20261000001078 (300 RPS)
+[11:11:13] processando lote NC20261000001074 (300 RPS)
+[11:11:13] processando lote NC20261000001075 (300 RPS)
+[11:11:13] processando lote NC20261000001077 (300 RPS)
+[11:11:15] lote NC20261000001072 concluido em 1.5s: 2393 resultados, 1419 com erro
+[11:11:15] lote NC20261000001073 concluido em 1.5s: 2393 resultados, 1419 com erro
+[11:11:15] lote NC20261000001077 concluido em 1.5s: 2393 resultados, 1419 com erro
+[11:11:15] lote NC20261000001074 concluido em 1.5s: 2393 resultados, 1419 com erro
+[11:11:15] lote NC20261000001078 concluido em 1.5s: 2393 resultados, 1419 com erro
+[11:11:15] lote NC20261000001075 concluido em 1.5s: 2393 resultados, 1419 com erro
+[11:11:15] lote NC20261000001071 concluido em 1.6s: 2393 resultados, 1419 com erro
+[11:11:15] lote NC20261000001076 concluido em 1.6s: 2393 resultados, 1419 com erro

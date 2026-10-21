@@ -1,0 +1,35 @@
+tools/carga-fechamento.sh 8 300 (2026-10-21 11:15) com V001 a V003 aplicadas e resultados por lote:
+
+[11:15:33] processando lote NC20261000001118 (300 RPS)
+[11:15:33] processando lote NC20261000001121 (300 RPS)
+[11:15:33] processando lote NC20261000001116 (300 RPS)
+[11:15:33] processando lote NC20261000001120 (300 RPS)
+[11:15:33] processando lote NC20261000001117 (300 RPS)
+[11:15:33] processando lote NC20261000001115 (300 RPS)
+[11:15:33] processando lote NC20261000001119 (300 RPS)
+[11:15:33] processando lote NC20261000001122 (300 RPS)
+[11:15:34] lote NC20261000001120 concluido em 0.6s: 300 resultados, 150 com erro
+[11:15:34] lote NC20261000001121 concluido em 0.6s: 300 resultados, 149 com erro
+[11:15:34] lote NC20261000001117 concluido em 0.6s: 300 resultados, 150 com erro
+[11:15:34] lote NC20261000001119 concluido em 0.7s: 300 resultados, 150 com erro
+[11:15:34] lote NC20261000001118 concluido em 0.7s: 300 resultados, 150 com erro
+[11:15:34] lote NC20261000001122 concluido em 0.7s: 300 resultados, 151 com erro
+[11:15:34] lote NC20261000001116 concluido em 0.7s: 300 resultados, 150 com erro
+[11:15:34] lote NC20261000001115 concluido em 0.7s: 300 resultados, 0 com erro
+
+
+PROTOCOLO			     E060  ORA_00001	   E999     OUTROS
+------------------------------ ---------- ---------- ---------- ----------
+NC20261000001115
+NC20261000001116		      150	   0	      0 	 0
+NC20261000001117		      150	   0	      0 	 0
+NC20261000001118		      150	   0	      0 	 0
+NC20261000001119		      150	   0	      0 	 0
+NC20261000001120		      150	   0	      0 	 0
+NC20261000001121		      149	   0	      0 	 0
+NC20261000001122		      151	   0	      0 	 0
+
+RPS_DISTINTOS_ENVIADOS_SERIE   COM_NOTA
+---------------------------- ----------
+			1350	   1350
+

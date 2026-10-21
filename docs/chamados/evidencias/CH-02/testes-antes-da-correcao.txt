@@ -1,0 +1,21 @@
+Testes do CH-02 no código original (2026-10-21), Oracle do compose:
+
+  Failed Numeracao_Concorrente [2 s]
+  Error Message:
+Oracle.ManagedDataAccess.Client.OracleException: ORA-00001: unique constraint (NFSE_OWNER.UK_NFSE_NUMERO) violated on table NFSE_OWNER.NFSE columns (PRESTADOR_ID, NUMERO)
+ORA-03301: (ORA-00001 details) row with column values (PRESTADOR_ID:100084, NUMERO:1) already exists
+ORA-06512: at "NFSE_OWNER.PKG_NFSE", line 30
+ORA-06512: at line 1
+  Failed Rps_Concorrente [19 ms]
+  Error Message:
+   Assert.AreEqual failed. Expected:<0>. Actual:<1>. 
+  Failed Guia_Concorrente [2 s]
+  Error Message:
+Oracle.ManagedDataAccess.Client.OracleException: ORA-00001: unique constraint (NFSE_OWNER.UK_GUIAS_PREST_COMP) violated on table NFSE_OWNER.GUIAS columns (PRESTADOR_ID, COMPETENCIA)
+ORA-03301: (ORA-00001 details) row with column values (PRESTADOR_ID:100086, COMPETENCIA:01-OCT-26) already exists
+ORA-06512: at "NFSE_OWNER.PKG_GUIA", line 8
+ORA-06512: at line 1
+  Failed Lotes_Simultaneos [279 ms]
+  Error Message:
+   Assert.AreEqual failed. Expected:<0>. Actual:<41>. NC20261000001088
+Failed!  - Failed:     4, Passed:     0, Skipped:     0, Total:     4, Duration: 4 s - NotaCarioca.Testes.Integracao.dll (net8.0)

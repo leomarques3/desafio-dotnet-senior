@@ -1,0 +1,14 @@
+Observado em 2026-10-20 ao rodar os testes de caracterização (Oracle via Testcontainers, código original).
+Três lotes pendentes foram processados em paralelo por um único ProcessarPendentes (uma thread por lote).
+O lote NC20261000001012 tinha 3 RPS válidos e terminou com situação 3 (com erros) e 9 resultados.
+O lote NC20261000001011 tinha 2 RPS e reportou 8 resultados.
+
+ [22:44:37] processando lote NC20261000001011 (2 RPS)
+ [22:44:37] processando lote NC20261000001012 (3 RPS)
+ [22:44:37] processando lote NC20261000001010 (4 RPS)
+ [22:44:37] lote NC20261000001011 concluido em 0.0s: 8 resultados, 0 com erro
+ [22:44:37] lote NC20261000001010 concluido em 0.0s: 9 resultados, 2 com erro
+ [22:44:37] lote NC20261000001012 concluido em 0.0s: 9 resultados, 2 com erro
+
+Causa: ProcessadorLoteRps._resultados é static, compartilhada pelas threads, e cada lote chama _resultados.Clear().
+Os erros do lote NC20261000001010 (exemplo 01, prestador 25, RPS repetidos) foram gravados também no NC20261000001012.

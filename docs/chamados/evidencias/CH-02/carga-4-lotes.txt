@@ -1,0 +1,28 @@
+tools/carga-fechamento.sh 4 500 (2026-10-21 11:10, codigo original, agendador do compose)
+
+[11:10:11] processando lote NC20261000001068 (500 RPS)
+[11:10:11] processando lote NC20261000001067 (500 RPS)
+[11:10:11] processando lote NC20261000001070 (500 RPS)
+[11:10:11] processando lote NC20261000001069 (500 RPS)
+[11:10:12] lote NC20261000001068 concluido em 0.8s: 2000 resultados, 943 com erro
+[11:10:12] lote NC20261000001070 concluido em 0.8s: 2000 resultados, 943 com erro
+[11:10:12] lote NC20261000001069 concluido em 0.8s: 2000 resultados, 943 com erro
+[11:10:12] lote NC20261000001067 concluido em 0.9s: 2000 resultados, 943 com erro
+
+
+PROTOCOLO			     E060  ORA_00001	   E999     OUTROS
+------------------------------ ---------- ---------- ---------- ----------
+NC20261000001067		      500	 886	    443 	 0
+NC20261000001068		      500	 886	    443 	 0
+NC20261000001069		      500	 886	    443 	 0
+NC20261000001070		      500	 886	    443 	 0
+
+RPS_DISTINTOS_ENVIADOS_SERIE   COM_NOTA
+---------------------------- ----------
+			1057	   1057
+
+EXEMPLO
+--------------------------------------------------------------------------------
+ORA-00001: unique constraint (NFSE_OWNER.UK_NFSE_NUMERO) vio
+lated on table NFSE_
+
