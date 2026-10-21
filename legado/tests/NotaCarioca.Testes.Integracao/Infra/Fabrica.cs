@@ -16,12 +16,12 @@ namespace NotaCarioca.Testes.Integracao.Infra
     {
         private static int _contadorDocumentos = new Random().Next(1, 900000);
 
-        public static PrestadorTeste CriarPrestador(string regime = "N", bool ativo = true)
+        public static PrestadorTeste CriarPrestador(string regime = "N", bool ativo = true, string cnpj = null)
         {
             PrestadorTeste p = new PrestadorTeste();
             p.Id = Convert.ToInt64(Sql.Escalar("SELECT SEQ_CONTRIBUINTES.NEXTVAL FROM DUAL"));
             p.InscricaoMunicipal = "9" + (p.Id % 10000000).ToString("D7", CultureInfo.InvariantCulture);
-            p.Cnpj = NovoCnpj();
+            p.Cnpj = cnpj ?? NovoCnpj();
             p.RazaoSocial = "PRESTADOR TESTE " + p.Id;
             Sql.Executar(
                 "INSERT INTO CONTRIBUINTES (ID, INSCRICAO_MUNICIPAL, DOCUMENTO, RAZAO_SOCIAL, REGIME, ATIVO) " +
@@ -40,6 +40,12 @@ namespace NotaCarioca.Testes.Integracao.Infra
             int n = System.Threading.Interlocked.Increment(ref _contadorDocumentos);
             string raiz = (zeroAEsquerda ? "0" : "8") + (n % 10000000).ToString("D7", CultureInfo.InvariantCulture);
             return CnpjComDv(raiz + "0001");
+        }
+
+        public static string NovoCnpjAlfanumerico()
+        {
+            int n = System.Threading.Interlocked.Increment(ref _contadorDocumentos);
+            return CnpjComDv("AB" + (n % 1000000).ToString("D6", CultureInfo.InvariantCulture) + "0001");
         }
 
         public static string NovoCpf(bool zeroAEsquerda = false)

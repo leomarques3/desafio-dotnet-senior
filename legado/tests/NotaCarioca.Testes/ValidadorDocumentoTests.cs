@@ -26,6 +26,23 @@ namespace NotaCarioca.Testes
         }
 
         [TestMethod]
+        public void CnpjAlfanumerico_Valido()
+        {
+            Assert.IsTrue(ValidadorDocumento.ValidarCnpj("12ABC34501DE35"));
+            Assert.IsTrue(ValidadorDocumento.ValidarCnpj("12.ABC.345/01DE-35"));
+            Assert.IsTrue(ValidadorDocumento.ValidarCpfOuCnpj("12.abc.345/01de-35"));
+        }
+
+        [TestMethod]
+        public void CnpjAlfanumerico_Invalido()
+        {
+            Assert.IsFalse(ValidadorDocumento.ValidarCnpj("12ABC34501DE36"));
+            Assert.IsFalse(ValidadorDocumento.ValidarCnpj("12ABC34501DEA5"));
+            Assert.IsFalse(ValidadorDocumento.ValidarCnpj("12ABC34501D-35"));
+            Assert.IsFalse(ValidadorDocumento.ValidarCpfOuCnpj("12ABC34501DE36"));
+        }
+
+        [TestMethod]
         public void Cpf_Valido()
         {
             Assert.IsTrue(ValidadorDocumento.ValidarCpf("52998224725"));
