@@ -159,6 +159,8 @@ namespace NotaCarioca.Servicos
             }
             catch (OracleException ex)
             {
+                if (ex.Number == 1 && ex.Message.Contains("UK_RPS_PREST_SERIE_NUM"))
+                    return Erro(res, CodigosRetorno.E060);
                 res.Sucesso = false;
                 res.Codigo = CodigosRetorno.E999;
                 res.Mensagem = ex.Message;
