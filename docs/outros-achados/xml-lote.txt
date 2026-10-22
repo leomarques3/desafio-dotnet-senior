@@ -1,0 +1,8 @@
+LOTES_RPS no banco local recriado em 21/10 (seeds, testes e medicoes do CH-04)
+
+LOTES  MB_CARACTERES  MIN(DT_RECEBIMENTO)
+  169           13.8  05-OCT-26
+
+Segmentos LOB de LOTES_RPS (XML_LOTE e ERROS)
+SYS_LOB0000073295C00006$$   42.3 MB
+SYS_LOB0000073295C00007$$   16.3 MB

@@ -1,0 +1,45 @@
+Consulta de notas do prestador 20002000 (carga de volume, 400 notas em 24 competencias) para 09/2026,
+com o mesmo filtro de NfseRepositorio.ConsultarPorPrestador
+
+NOTAS_NO_PERIODO
+----------------
+	      15
+
+PLAN_TABLE_OUTPUT
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SQL_ID	arhduvnb6jjuh, child number 0
+-------------------------------------
+SELECT /*+ GATHER_PLAN_STATISTICS */ /* ACHADO_PRESTADOR */ COUNT(*) AS
+NOTAS_NO_PERIODO   FROM NFSE n	WHERE n.PRESTADOR_ID = :prest	 AND
+n.COMPETENCIA <= TO_DATE(:fim, 'YYYY-MM-DD')	AND n.DT_EMISSAO >=
+TO_DATE(:ini, 'YYYY-MM-DD') AND n.DT_EMISSAO < TO_DATE(:fim,
+'YYYY-MM-DD')
+
+Plan hash value: 2341566918
+
+-----------------------------------------------------------------------------------------------------------------------------------
+| Id  | Operation			      | Name		       | Starts | E-Rows | A-Rows |   A-Time   | Buffers | Reads  |
+-----------------------------------------------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT		      | 		       |      1 |	 |	1 |00:00:00.01 |     200 |     43 |
+|   1 |  SORT AGGREGATE 		      | 		       |      1 |      1 |	1 |00:00:00.01 |     200 |     43 |
+|*  2 |   FILTER			      | 		       |      1 |	 |     15 |00:00:00.01 |     200 |     43 |
+|*  3 |    TABLE ACCESS BY INDEX ROWID BATCHED| NFSE		       |      1 |     16 |     15 |00:00:00.01 |     200 |     43 |
+|*  4 |     INDEX RANGE SCAN		      | IX_NFSE_PRESTADOR_COMP |      1 |    398 |    400 |00:00:00.01 |       4 |	0 |
+-----------------------------------------------------------------------------------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   2 - filter(TO_DATE(:FIM,'YYYY-MM-DD')>TO_DATE(:INI,'YYYY-MM-DD'))
+   3 - filter(("N"."DT_EMISSAO">=TO_DATE(:INI,'YYYY-MM-DD') AND "N"."DT_EMISSAO"<TO_DATE(:FIM,'YYYY-MM-DD')))
+   4 - access("N"."PRESTADOR_ID"=:PREST AND "N"."COMPETENCIA"<=TO_DATE(:FIM,'YYYY-MM-DD'))
+
+
+NOTAS_COM_COMPETENCIA_ATE_FIM
+-----------------------------
+			  400
+== notas cuja competencia e anterior ao mes da emissao (RPS com data antiga)
+
+     NOTAS
+----------
+	 1

@@ -1,0 +1,4 @@
+Cancelamento da nota 14 do prestador 10000004 pedido com o CNPJ 11222333000181 (o CNPJ do prestador e 11400012000120)
+
+<CancelarNfseResposta><Cancelamento><Confirmacao><Pedido><InfPedidoCancelamento><IdentificacaoNfse><Numero>14</Numero><Cnpj>11222333000181</Cnpj><InscricaoMunicipal>10000004</InscricaoMunicipal></IdentificacaoNfse><CodigoCancelamento>1</CodigoCancelamento></InfPedidoCancelamento></Pedido><DataHora>2026-10-21T17:18:09</DataHora></Confirmacao></Cancelamento></CancelarNfseResposta>
+

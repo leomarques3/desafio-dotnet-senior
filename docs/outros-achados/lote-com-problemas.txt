@@ -1,0 +1,29 @@
+Lote enviado pelo SOAP (tools/enviar-lote.sh) para o prestador 10000004, que tem a guia de 07/2026 paga.
+Prestador/Cnpj = 11222333000181 (o CNPJ do prestador e 11400012000120), QuantidadeRps = 9 e 3 RPS:
+  RPS 1: DataEmissao 2026-07-15T10:00:00, valor 1000,00, item 17.01
+  RPS 2: DataEmissao 31/13/2026 (invalida), valor 1000,00
+  RPS 3: Discriminacao com 2100 caracteres (a coluna tem 2000)
+
+Retorno do envio: protocolo NC20261000001165 (lote aceito)
+
+LOTES_RPS
+PROTOCOLO          QTD_RPS  SITUACAO
+NC20261000001165         3         3
+
+ERROS
+<ListaMensagemRetorno><MensagemRetorno><IdentificacaoRps><Numero>3</Numero><Serie>ACH</Serie></IdentificacaoRps><Codigo>E999</Codigo><Mensagem>ORA-12899: value too large for column &quot;NFSE_OWNER&quot;.&quot;NFSE&quot;.&quot;DISCRIMINACAO&quot; (actual: 2100, maximum: 2000)
+ORA-06512: at &quot;NFSE_OWNER.PKG_NFSE&quot;, line 37
+ORA-06512: at line 1
+https://docs.oracle.com/error-help/db/ora-12899/</Mensagem><Correcao>Tente novamente mais tarde.</Correcao></MensagemRetorno></ListaMensagemRetorno>
+
+Notas geradas
+NUMERO  DT_EMISSAO        COMPETENCIA  VALOR_ISS
+    13  2026-10-21 17:17  2026-07             50
+    14  2026-10-21 17:17  2026-10             50
+
+Guias x soma do ISS das notas do prestador
+COMPETENCIA  SITUACAO  GUIA     SOMA_NOTAS
+2026-07      P          290.29     340.29
+2026-08      A          381.44     381.44
+2026-09      A         1002.44    1002.44
+2026-10      A          378.72     378.72
