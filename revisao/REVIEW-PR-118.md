@@ -1,4 +1,4 @@
-# Revisão do PR #118 (fix/lotes-ora-00001 → main)
+# Revisão do PR #118 (fix/lotes-ora-00001 para main)
 
 **Veredito: Request changes.** Não aprovaria o merge.
 
@@ -62,7 +62,7 @@ ALTER TABLE RPS ADD CONSTRAINT UK_RPS_PREST_SERIE_NUM
   UNIQUE (PRESTADOR_ID, SERIE, NUMERO) USING INDEX IX_RPS_PRESTADOR_NUM ENABLE NOVALIDATE;
 ```
 
-Na aplicação, o ORA-00001 nessa constraint vira E060 para o RPS. Antes de aplicar, convém levantar quantos RPS já têm duas notas em produção. Esses casos precisam ir para a fiscalização, porque as notas não podem ser simplesmente apagadas.
+Na aplicação, o ORA-00001 nessa constraint vira E060 para o RPS. Antes de aplicar, convém levantar quantos RPS já têm duas notas em produção. Esses casos precisam ir para a fiscalização, porque as notas não podem ser apagadas.
 
 ### 3. O lock no `Add` não resolve a disputa em `_resultados`
 
