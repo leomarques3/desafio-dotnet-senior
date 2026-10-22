@@ -1,3 +1,89 @@
+# Nota Carioca: resolução do desafio
+
+Este fork resolve o desafio descrito mais abaixo, a partir de "Desafio Técnico". Esta primeira parte explica o que foi feito, como rodar e por onde começar a ler.
+
+## Onde está cada coisa
+
+| Item | Documento | Migrations |
+|---|---|---|
+| CH-01 guia não bate com as notas | [`docs/chamados/CH-01.md`](docs/chamados/CH-01.md) | V006, V007 |
+| CH-02 ORA-00001 e nota em duplicidade | [`docs/chamados/CH-02.md`](docs/chamados/CH-02.md) | V001, V002, V003 |
+| CH-03 lote grande derruba o processamento | [`docs/chamados/CH-03.md`](docs/chamados/CH-03.md) | nenhuma |
+| CH-04 consulta de serviços tomados com timeout | [`docs/chamados/CH-04.md`](docs/chamados/CH-04.md) | nenhuma |
+| CH-05 nota cancelada continua na guia | [`docs/chamados/CH-05.md`](docs/chamados/CH-05.md) | V004, V005 |
+| CNPJ alfanumérico | [`docs/cnpj-alfanumerico.md`](docs/cnpj-alfanumerico.md) | V008 |
+| Revisão do PR-118 | [`revisao/REVIEW-PR-118.md`](revisao/REVIEW-PR-118.md) | |
+| Runbook de plantão | [`docs/runbook-plantao.md`](docs/runbook-plantao.md) | |
+| Outros problemas encontrados | [`docs/outros-achados.md`](docs/outros-achados.md) | |
+
+Cada documento de chamado tem sintoma, como reproduzir, causa raiz, evidência, correção, os commits com o teste falhando e passando, impacto nos dados já gravados, migrations com lock e rollback, e risco. As evidências ficam em `docs/chamados/evidencias/`.
+
+Resumo das causas:
+
+- CH-01: o VB calculava o ISS em `Double` com arredondamento bancário e gravava 1 centavo a menos em valores com meio centavo. A guia recalculava com o `ROUND` do Oracle em vez de somar o ISS das notas.
+- CH-02: numeração `MAX + 1` sem trava, RPS sem restrição única, lista de resultados `static` compartilhada entre lotes, `MERGE` da guia sem tratar inserção simultânea e o mesmo lote podendo ser processado duas vezes.
+- CH-03: o lote inteiro em DOM na recepção e no processamento, todos os resultados guardados até o fim, erros concatenados em string e uma thread por lote sem limite.
+- CH-04: hint `FULL`, `TRUNC` na data e o documento passado como número, o que fazia o Oracle converter a coluna e ignorar o índice.
+- CH-05: a trigger da guia rodava em transação autônoma e não enxergava o cancelamento ainda não confirmado.
+
+## Como rodar
+
+Pré-requisitos: Docker, .NET 8 SDK e, opcionalmente, [just](https://github.com/casey/just). O build `net48` funciona em qualquer sistema operacional, mas os testes `net48` só rodam no Windows.
+
+```bash
+just up                     # Oracle com a carga e os webservices; o init.sh aplica as migrations V001 a V008
+just build                  # net48 e net8.0
+just test                   # testes unitários
+just test-integracao        # testes de integração num Oracle próprio, criado pelo Testcontainers
+just test-integracao-local  # testes de integração no Oracle do compose (para os webservices durante os testes)
+```
+
+Os testes de integração pelo Testcontainers sobem um Oracle sem a carga de volume, aplicam o schema, os packages e as migrations e levam poucos minutos. Os testes de caracterização (`Caracterizacao/`) comparam as respostas SOAP com as dos exemplos em `tools/exemplos/` e protegem o comportamento que os clientes já usam, inclusive as esquisitices: `DataFinal` exclusiva, documento do tomador sem zeros à esquerda e cancelamento repetido respondendo sucesso.
+
+Medições e diagnósticos:
+
+```bash
+tools/medicoes/medir-lote.sh 50000 2                          # memória e tempo de 2 lotes de 50 mil RPS
+tools/medicoes/medir-tomado.sh 11444777000161 2026-09-01 2026-09-30 20
+docker compose exec -T oracle sqlplus -s NFSE_OWNER/nfse_dev_123@//localhost:1521/FREEPDB1 < tools/diagnostico/ch02_invariantes.sql
+```
+
+O `tools/enviar-lote.sh` original não funcionava no macOS por causa do `sed`. A correção está em `b998127`.
+
+O CI (`.github/workflows/ci.yml`) roda em cada push: no Linux, build `net48` e `net8.0`, testes unitários e testes de integração com Oracle. No Windows, build e testes unitários em `net48` e `net8.0`.
+
+## Ordem de ataque
+
+1. Revisão do PR-118. Ele estava pronto para entrar, mexia em três chamados e trocava a numeração da NFS-e por uma sequence global, que deixa lacunas. Por isso a revisão veio antes de qualquer correção.
+2. Base de testes: projeto de integração contra Oracle de verdade, caracterização do contrato SOAP e CI. Sem isso não dava para mudar o código com segurança nem mostrar o teste falhando antes da correção.
+3. CH-02. Nota em duplicidade e numeração errada são erros fiscais que não podem ser desfeitos depois, porque nota emitida não muda, e o problema volta em todo fechamento de mês.
+4. CH-05 e CH-01, que cobram valor errado do contribuinte. O CH-05 veio antes porque a correção de dados do CH-01 recalcula guias, e com a trigger antiga um cancelamento novo voltaria a deixar a guia errada.
+5. CH-03 e CH-04, de disponibilidade. O CH-03 derruba o processamento de todos os lotes quando o pool recicla. O CH-04 afeta os grandes tomadores e o consumo do banco.
+6. CNPJ alfanumérico, a evolução regulatória. Ele dependia da correção do CH-04, porque com um único documento alfanumérico no banco a consulta de serviços tomados quebrava com `ORA-01722`.
+
+O histórico de commits segue essa ordem. Em cada chamado, o commit `test(...)` entra com o teste falhando e os commits `fix(...)` seguintes fazem ele passar. O documento de cada chamado tem a tabela com o resultado dos testes em cada commit.
+
+## Decisões principais
+
+- Numeração da NFS-e com trava na linha do prestador (`FOR UPDATE`) em vez de sequence. A regra exige numeração por prestador sem lacunas, e a sequence perde números em rollback e restart.
+- Restrição única em `RPS` com `ENABLE NOVALIDATE` sobre o índice que já existia. Não varre a tabela e funciona mesmo com duplicados antigos.
+- Guia como soma do `VALOR_ISS` gravado nas notas. A nota é o documento fiscal e não muda, então a guia tem de bater com ela, inclusive com as notas antigas que saíram 1 centavo abaixo.
+- Trigger da guia como compound trigger na mesma transação, em vez de recalcular só no serviço de cancelamento, para cobrir também cancelamentos feitos direto no banco.
+- Correções de dados só em guia aberta, em lotes com commit e tabela de auditoria. Guia paga vai para a fiscalização, que decide entre restituição e compensação.
+- Nenhum índice novo em tabela grande. As consultas foram corrigidas para usar os índices que já existiam.
+
+## O que ficou de fora
+
+- Recepção do lote sem passar por uma string inteira. O pico de quase 1 GB na recepção de um lote de 50 mil RPS vem do host e do driver, e resolver muda o contrato do serviço (CH-03).
+- Retomada de lote interrompido e limite de tentativas para lote que falha sempre (`docs/outros-achados.md`, itens 2 e 6).
+- Menos idas ao banco por RPS no processamento. São cerca de cinco por RPS, e o chamado era de memória.
+- Testes de integração em `net48`. Eles rodam só em `net8.0`, porque o Oracle em container não sobe no runner Windows do GitHub.
+- Paginação por chave em vez de `ROWNUM` nas consultas, que ficam caras nas páginas profundas.
+- Remoção física da coluna da V008 depois de um rollback (`DROP UNUSED COLUMNS`), que reescreve a `RPS` e precisa de janela.
+- Os itens de `docs/outros-achados.md`, que dependem de decisão de negócio.
+
+---
+
 # Desafio Técnico — Engenheiro(a) de Software Sênior (.NET / Oracle)
 
 ## Contexto
